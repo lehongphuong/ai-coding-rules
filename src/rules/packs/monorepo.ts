@@ -14,7 +14,8 @@ const TOOL_TEXT: Record<string, string> = {
   turborepo: 'Run builds and tests through `turbo run <task>` so task caching and ordering apply.',
   nx: 'Use `nx affected -t <target>` to build and test only the projects touched by a change.',
   lerna: 'Run scripts across packages with `lerna run <script>`.',
-  melos: 'Run `melos bootstrap` after changing package dependencies and `melos run <script>` for shared scripts.',
+  melos:
+    'Run `melos bootstrap` after changing package dependencies and `melos run <script>` for shared scripts.',
   'go-work': 'Register new Go modules in `go.work` with `go work use <dir>`.',
 };
 

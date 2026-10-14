@@ -95,7 +95,10 @@ function commandRunsTools(cmd: string, tools: string[]): boolean {
 /** "Prettier (`pnpm format`)", or just "`dart format .`" when the command names the tool. */
 function toolWithCommand(q: FactQuery, tools: string[], kind: CommandKind): string {
   const names = [...new Set(tools.map(displayName))];
-  const cmd = q.commands(kind).map((c) => String(c.value)).find((c) => commandRunsTools(c, tools));
+  const cmd = q
+    .commands(kind)
+    .map((c) => String(c.value))
+    .find((c) => commandRunsTools(c, tools));
   if (!cmd) return joinList(names);
   if (names.length === 1 && cmd.toLowerCase().includes(names[0]!.toLowerCase())) return code(cmd);
   return `${joinList(names)} (${code(cmd)})`;
@@ -169,7 +172,8 @@ export const commonPack: RulePack = {
       section: 'code-style',
       priority: 10,
       when: (q) => q.has('formatter'),
-      text: (q) => `Format with ${toolWithCommand(q, q.values('formatter'), 'format')} before committing.`,
+      text: (q) =>
+        `Format with ${toolWithCommand(q, q.values('formatter'), 'format')} before committing.`,
       evidence: (q) => [...q.evidence('formatter'), ...commandEvidence(q, 'format')],
     },
     {
@@ -227,7 +231,12 @@ export const commonPack: RulePack = {
       when: (q) => q.has('framework', 'react') || q.has('framework', 'vue'),
       text: 'Expose client env vars only with the `VITE_` prefix and read them via `import.meta.env`.',
       evidence: (q) => {
-        const f = firstFile(q, ['vite.config.ts', 'vite.config.js', 'vite.config.mts', 'vite.config.mjs']);
+        const f = firstFile(q, [
+          'vite.config.ts',
+          'vite.config.js',
+          'vite.config.mts',
+          'vite.config.mjs',
+        ]);
         return f ? q.fileEvidence(f) : [];
       },
     },
@@ -273,7 +282,8 @@ export const commonPack: RulePack = {
       section: 'testing',
       priority: 20,
       when: (q) => q.command('test') !== undefined,
-      text: (q) => `Run ${code(q.command('test')!)} and make sure it passes before finishing a task.`,
+      text: (q) =>
+        `Run ${code(q.command('test')!)} and make sure it passes before finishing a task.`,
       evidence: ev({ command: 'test' }),
     },
     {
@@ -289,7 +299,8 @@ export const commonPack: RulePack = {
       section: 'dos-donts',
       priority: 10,
       when: (q) => q.has('ci'),
-      text: (q) => `CI runs on ${joinList(q.values('ci').map(displayName))}; keep it green and never skip failing checks.`,
+      text: (q) =>
+        `CI runs on ${joinList(q.values('ci').map(displayName))}; keep it green and never skip failing checks.`,
       evidence: ['ci'],
     },
     {

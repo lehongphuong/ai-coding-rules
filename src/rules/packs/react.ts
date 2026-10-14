@@ -3,7 +3,8 @@ import { allOf, ev } from './helpers.js';
 
 const STATE_TEXT: Record<string, string> = {
   redux: 'Keep shared state in Redux slices; use local `useState` for component-only state.',
-  zustand: 'Keep shared client state in Zustand stores; use local `useState` for component-only state.',
+  zustand:
+    'Keep shared client state in Zustand stores; use local `useState` for component-only state.',
   mobx: 'Keep shared state in MobX stores and wrap reactive components with `observer`.',
 };
 
@@ -35,7 +36,11 @@ export const reactPack: RulePack = {
         const s = q.values('stateManagement').find((v) => v in STATE_TEXT);
         return s ? STATE_TEXT[s]! : '';
       },
-      evidence: (q) => q.all('stateManagement').filter((f) => String(f.value) in STATE_TEXT).flatMap((f) => f.evidence),
+      evidence: (q) =>
+        q
+          .all('stateManagement')
+          .filter((f) => String(f.value) in STATE_TEXT)
+          .flatMap((f) => f.evidence),
     },
     {
       id: 'react/testing-library',

@@ -14,7 +14,8 @@ const STATE_TEXT: Record<string, string> = {
   riverpod:
     'Manage state with Riverpod providers; use `ref.watch` in `build` and `ref.read` in callbacks, never global singletons.',
   bloc: 'Put business logic in Blocs/Cubits; widgets only add events and render states with `BlocBuilder`/`BlocListener`.',
-  provider: 'Expose state with `ChangeNotifier` classes through Provider; read it with `context.watch`/`context.read`.',
+  provider:
+    'Expose state with `ChangeNotifier` classes through Provider; read it with `context.watch`/`context.read`.',
   getx: 'Keep state and logic in GetX controllers; widgets observe them with `Obx`/`GetBuilder`.',
 };
 

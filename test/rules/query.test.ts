@@ -96,11 +96,14 @@ describe('FactQuery', () => {
     const p = project([], ws, {
       'apps/api/package.json': JSON.stringify({ devDependencies: { zod: '3.0.0' } }),
       'apps/api/.env.example': '',
-      'pubspec.yaml': 'name: x\ndependencies:\n  flutter_riverpod: ^2.0.0\ndev_dependencies:\n  build_runner: ^2.0.0\n',
+      'pubspec.yaml':
+        'name: x\ndependencies:\n  flutter_riverpod: ^2.0.0\ndev_dependencies:\n  build_runner: ^2.0.0\n',
     });
     const api = createFactQuery(p, 'apps/api');
     expect(api.path('src')).toBe('apps/api/src');
-    expect(api.fileEvidence('.env.example', 'missing')).toEqual([{ file: 'apps/api/.env.example' }]);
+    expect(api.fileEvidence('.env.example', 'missing')).toEqual([
+      { file: 'apps/api/.env.example' },
+    ]);
     expect(api.dependency('zod')).toEqual({
       file: 'apps/api/package.json',
       pointer: '#devDependencies.zod',
