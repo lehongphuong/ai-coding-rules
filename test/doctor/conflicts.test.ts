@@ -9,7 +9,8 @@ describe('conflict/repo', () => {
   it('reports claims that contradict repo facts', () => {
     const facts = project(
       {
-        'CLAUDE.md': '# Dev\n\nRun tests with `npm test`.\nUse Jest for unit tests.\nIndent with 4 spaces.\n',
+        'CLAUDE.md':
+          '# Dev\n\nRun tests with `npm test`.\nUse Jest for unit tests.\nIndent with 4 spaces.\n',
       },
       { facts: [...PNPM_VITEST, fact('indent', '2', { file: '.editorconfig' })] },
     );
@@ -25,13 +26,18 @@ describe('conflict/repo', () => {
         '"Run tests with `npm test`." — repo uses pnpm (pnpm-lock.yaml); package manager mismatch',
     });
     expect(findings[0]!.hint).toContain('pnpm');
-    expect(findings[1]!.message).toContain('repo uses vitest (package.json#devDependencies.vitest)');
+    expect(findings[1]!.message).toContain(
+      'repo uses vitest (package.json#devDependencies.vitest)',
+    );
   });
 
   it('reports one finding per line and key', () => {
-    const facts = project({ 'AGENTS.md': 'Run `npm install && npm test` and `npm run lint`.\n' }, {
-      facts: PNPM_VITEST,
-    });
+    const facts = project(
+      { 'AGENTS.md': 'Run `npm install && npm test` and `npm run lint`.\n' },
+      {
+        facts: PNPM_VITEST,
+      },
+    );
     expect(brief(checkConflictRepo(context(facts)))).toEqual(['AGENTS.md:1 conflict/repo']);
   });
 
@@ -70,7 +76,9 @@ describe('conflict/repo', () => {
       },
     );
     // Root doc: jest exists in apps/api → ok. apps/web doc: jest contradicts vitest there.
-    expect(brief(checkConflictRepo(context(facts)))).toEqual(['apps/web/AGENTS.md:1 conflict/repo']);
+    expect(brief(checkConflictRepo(context(facts)))).toEqual([
+      'apps/web/AGENTS.md:1 conflict/repo',
+    ]);
   });
 
   it('inherits packageManager from root for child scopes', () => {
@@ -78,7 +86,9 @@ describe('conflict/repo', () => {
       { 'apps/api/AGENTS.md': 'Install with `npm install`.\n' },
       { facts: PNPM_VITEST, workspaces: [{ dir: 'apps/api', name: 'api' }] },
     );
-    expect(brief(checkConflictRepo(context(facts)))).toEqual(['apps/api/AGENTS.md:1 conflict/repo']);
+    expect(brief(checkConflictRepo(context(facts)))).toEqual([
+      'apps/api/AGENTS.md:1 conflict/repo',
+    ]);
   });
 
   it('accepts a formatter the repo uses as a linter', () => {
@@ -96,7 +106,10 @@ describe('docScope', () => {
     { dir: 'apps/api', name: 'api' },
   ];
   it('uses globs/applyTo front matter', () => {
-    const mdc = parseInstructionDoc('.cursor/rules/api.mdc', '---\nglobs: apps/api/**/*.ts\n---\nx');
+    const mdc = parseInstructionDoc(
+      '.cursor/rules/api.mdc',
+      '---\nglobs: apps/api/**/*.ts\n---\nx',
+    );
     const copilot = parseInstructionDoc(
       '.github/instructions/api.instructions.md',
       '---\napplyTo: "apps/api/**"\n---\nx',
@@ -148,6 +161,8 @@ describe('conflict/files', () => {
         'apps/api/AGENTS.md': 'Use Jest for tests.\n',
         '.cursor/rules/php.mdc': 'Write tests with PHPUnit.\n',
         '.github/copilot-instructions.md': 'Write tests with Pest.\n',
+        '.cursor/rules/py.mdc': '---\nglobs: "**/*.py"\n---\nIndent with 4 spaces.\n',
+        'GEMINI.md': 'Indent with 2 spaces.\n',
       },
       { workspaces: [{ dir: 'apps/api', name: 'api' }] },
     );

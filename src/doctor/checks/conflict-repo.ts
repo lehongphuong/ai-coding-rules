@@ -34,9 +34,7 @@ export function checkConflictRepo(ctx: DoctorContext): Finding[] {
       if (!family) continue;
 
       const visible = scopedFacts(facts, key, scope);
-      const strong = visible.filter(
-        (f) => f.confidence >= 0.9 && family.includes(String(f.value)),
-      );
+      const strong = visible.filter((f) => f.confidence >= 0.9 && family.includes(String(f.value)));
       if (strong.length === 0) continue;
 
       const accepted = visible.map((f) => String(f.value));

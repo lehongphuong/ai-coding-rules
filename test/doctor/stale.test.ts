@@ -121,7 +121,9 @@ describe('stale/command', () => {
   });
 
   it('checks justfile recipes', () => {
-    const extra = { justfile: 'build:\n  cargo build\n@test *args:\n  cargo test\nalias b := build\n' };
+    const extra = {
+      justfile: 'build:\n  cargo build\n@test *args:\n  cargo test\nalias b := build\n',
+    };
     expect(staleCommands('`just build`, `just test`, `just b`, `just fmt`', {}, extra)).toEqual([
       '1 `just fmt` — recipe `fmt` is not defined in justfile',
     ]);
@@ -179,9 +181,9 @@ describe('stale/path', () => {
       'API entry is `src/main.ts`.',
     ].join('\n');
     expect(stalePaths(doc)).toEqual([]);
-    expect(stalePaths('Entry `src/main.ts`, guide `../../docs/guide.md`.', 'apps/api/AGENTS.md')).toEqual(
-      [],
-    );
+    expect(
+      stalePaths('Entry `src/main.ts`, guide `../../docs/guide.md`.', 'apps/api/AGENTS.md'),
+    ).toEqual([]);
   });
 
   it('skips globs, URLs, ignored dirs, gitignored paths, code and negations', () => {

@@ -65,8 +65,7 @@ const LANGUAGES: Term[] = [
 ];
 
 /** Command runners recognised in backtick spans and code fences. */
-const RUNNER_RE =
-  /^(?:npm|pnpm|yarn|bun|make|just|composer|php\s+artisan|melos\s+run)(?:\s|$)/;
+const RUNNER_RE = /^(?:npm|pnpm|yarn|bun|make|just|composer|php\s+artisan|melos\s+run)(?:\s|$)/;
 
 const NPM_SUBCOMMANDS =
   'install|i|ci|add|run|run-script|test|t|start|exec|remove|rm|uninstall|update|up|dlx|x';
@@ -77,6 +76,8 @@ const NEGATION_BEFORE =
 /** "X is not used", "X is deprecated"... */
 const NEGATION_AFTER =
   /^[\s\w-]{0,20}?\b(?:is|are|was|were|isn'?t|aren'?t)\s+(?:not|no\s+longer|deprecated|removed|forbidden|banned|gone)\b|^\s*(?:isn'?t|aren'?t)\b|^\s*\((?:deprecated|legacy|removed)\)/i;
+const LANGUAGE_QUALIFIER =
+  /\b(?:python|py|go|golang|ya?ml|json|make(?:file)?s?|php|dart|java|kotlin|ruby|rust|markdown|md|html|css|scss|sql|shell|bash|c#|swift|xml)\b/i;
 const CLAUSE_BREAK = /[.;!?](?=\s|$)|[,:()|—–]|\s-\s/g;
 
 interface LineCtx {
@@ -128,8 +129,12 @@ export function extractClaims(doc: InstructionDoc): Claim[] {
     }
 
     extractPackageManagers(ctx, push);
-    extractTerms(ctx, 'testRunner', TEST_RUNNERS, push, (c) =>
-      TEST_CONTEXT.test(c.clean) || /test|spec/i.test(c.heading),
+    extractTerms(
+      ctx,
+      'testRunner',
+      TEST_RUNNERS,
+      push,
+      (c) => TEST_CONTEXT.test(c.clean) || /test|spec/i.test(c.heading),
     );
     extractTerms(ctx, 'formatter', FORMATTERS, push, () => true);
     extractTerms(ctx, 'linter', LINTERS, push, () => true);
@@ -202,13 +207,15 @@ function extractLanguages(ctx: LineCtx, push: Push): void {
 
 function extractStyle(ctx: LineCtx, push: Push): void {
   const s = ctx.clean;
-  const indentCtx = /\bindent/i.test(s);
+  // Language-specific indentation ("Python: 4 spaces") says nothing about the repo default.
+  const qualified = LANGUAGE_QUALIFIER.test(s);
+  const indentCtx = !qualified && /\bindent/i.test(s);
   for (const m of s.matchAll(/\b([248])[- ]spaces?\b/gi)) {
-    const imperative = /\buse\s+$/i.test(s.slice(0, m.index!));
+    const imperative = !qualified && /\buse\s+$/i.test(s.slice(0, m.index!));
     if (indentCtx || imperative) push(ctx, 'indent', m[1]!, isNegated(s, m.index!, m[0].length));
   }
   for (const m of s.matchAll(/\btabs\b/gi)) {
-    const imperative = /\buse\s+$/i.test(s.slice(0, m.index!));
+    const imperative = !qualified && /\buse\s+$/i.test(s.slice(0, m.index!));
     if (indentCtx || imperative) push(ctx, 'indent', 'tab', isNegated(s, m.index!, m[0].length));
   }
   if (/\b(?:use|prefer|always|strings?)\b/i.test(s)) {

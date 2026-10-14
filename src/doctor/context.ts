@@ -97,9 +97,7 @@ export function satisfies(claimed: string, actual: readonly string[]): boolean {
 /** Facts for `key` visible from `scope` (root inherited for packageManager/indent). */
 export function scopedFacts(facts: readonly Fact[], key: string, scope: string): Fact[] {
   const inherit = key === 'packageManager' || key === 'indent';
-  return facts.filter(
-    (f) => f.key === key && (f.scope === scope || (inherit && f.scope === '')),
-  );
+  return facts.filter((f) => f.key === key && (f.scope === scope || (inherit && f.scope === '')));
 }
 
 /** "1234" → "1.2k". */
@@ -116,5 +114,7 @@ export function quote(text: string, max = 80): string {
 
 export function loc(file: string, line?: number, endLine?: number): string {
   if (line === undefined) return file;
-  return endLine !== undefined && endLine !== line ? `${file}:${line}-${endLine}` : `${file}:${line}`;
+  return endLine !== undefined && endLine !== line
+    ? `${file}:${line}-${endLine}`
+    : `${file}:${line}`;
 }

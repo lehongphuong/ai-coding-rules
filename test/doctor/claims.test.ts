@@ -75,6 +75,8 @@ describe('extractClaims: tools', () => {
     expect(values('Use 4-space indentation.', 'indent')).toEqual(['4']);
     expect(values('Use tabs for indentation.', 'indent')).toEqual(['tab']);
     expect(values('Close unused browser tabs.', 'indent')).toEqual([]);
+    expect(values('Python files: indent with 4 spaces.', 'indent')).toEqual([]);
+    expect(values('Use tabs in Makefiles.', 'indent')).toEqual([]);
     expect(values('Use single quotes for strings.', 'quotes')).toEqual(['single']);
     expect(values('No semicolons.', 'semicolons')).toEqual(['never']);
     expect(values('Always use semicolons.', 'semicolons')).toEqual(['always']);

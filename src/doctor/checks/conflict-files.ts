@@ -11,6 +11,8 @@ const LABELS: Record<(typeof KEYS)[number], string> = {
   semicolons: 'semicolons',
 };
 
+const STYLE_KEYS = new Set(['indent', 'quotes', 'semicolons']);
+
 interface Side {
   doc: InstructionDoc;
   values: string[];
@@ -26,7 +28,10 @@ export function checkConflictFiles(ctx: DoctorContext): Finding[] {
     byScope.set(scope, [...(byScope.get(scope) ?? []), doc]);
   }
 
-  const merged = new Map<string, { finding: Finding; others: { at: Location; values: string[] }[] }>();
+  const merged = new Map<
+    string,
+    { finding: Finding; others: { at: Location; values: string[] }[] }
+  >();
   for (const [scope, docs] of byScope) {
     for (const key of KEYS) {
       for (const family of FAMILIES[key] ?? []) {
@@ -38,7 +43,11 @@ export function checkConflictFiles(ctx: DoctorContext): Finding[] {
           for (let j = i + 1; j < sides.length; j++) {
             const a = sides[i]!;
             const b = sides[j]!;
-            if (a.values.some((v) => satisfies(v, b.values) || b.values.some((w) => satisfies(w, [v])))) {
+            if (
+              a.values.some(
+                (v) => satisfies(v, b.values) || b.values.some((w) => satisfies(w, [v])),
+              )
+            ) {
               continue;
             }
             // Report on the side the repo contradicts; otherwise on the later file.
@@ -82,6 +91,8 @@ function sideFor(
   key: string,
   family: string[],
 ): Side | undefined {
+  // Style rules in glob-scoped files (e.g. "**/*.py") are file-type specific.
+  if (STYLE_KEYS.has(key) && (doc.frontMatter?.globs || doc.frontMatter?.applyTo)) return undefined;
   const claims = (ctx.claimsByDoc.get(doc.path) ?? []).filter(
     (c) => c.key === key && !c.negated && family.includes(c.value),
   );

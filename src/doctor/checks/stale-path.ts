@@ -49,7 +49,10 @@ function existsIn(files: FileIndex, p: string): boolean {
 }
 
 function checkable(p: string, gitignore: Ignore | undefined): boolean {
-  const segs = p.replace(/\/+$/, '').split('/').filter((s) => s !== '.' && s !== '..');
+  const segs = p
+    .replace(/\/+$/, '')
+    .split('/')
+    .filter((s) => s !== '.' && s !== '..');
   if (segs.length === 0) return false;
   if (segs.some((s) => IGNORED_SEGMENTS.has(s))) return false;
   if (DOMAIN_RE.test(segs[0]!)) return false;

@@ -35,8 +35,7 @@ export function parseInstructionDoc(path: string, text: string): InstructionDoc 
     current.endLine = end;
     // Drop a heading-less preamble that has no content at all.
     const empty =
-      current.level === 0 &&
-      lines.slice(current.startLine - 1, end).every((l) => l.trim() === '');
+      current.level === 0 && lines.slice(current.startLine - 1, end).every((l) => l.trim() === '');
     if (!empty) sections.push(current);
     current = undefined;
   };
@@ -56,7 +55,8 @@ export function parseInstructionDoc(path: string, text: string): InstructionDoc 
     if (fm) {
       fence = { char: fm[1]![0]!, len: fm[1]!.length };
       codeLines.add(n);
-      if (!current) current = { heading: '', level: 0, startLine: n, endLine: n, generated: inManaged };
+      if (!current)
+        current = { heading: '', level: 0, startLine: n, endLine: n, generated: inManaged };
       continue;
     }
     if (BEGIN_MARKER_RE.test(line.trim())) {

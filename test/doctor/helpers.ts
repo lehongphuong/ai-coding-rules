@@ -51,7 +51,10 @@ export function project(
   };
 }
 
-export function context(facts: ProjectFacts, config: ResolvedConfig = defaultConfig()): DoctorContext {
+export function context(
+  facts: ProjectFacts,
+  config: ResolvedConfig = defaultConfig(),
+): DoctorContext {
   const docs = parseInstructionFiles(facts.files);
   return { facts, config, docs, claimsByDoc: new Map(docs.map((d) => [d.path, extractClaims(d)])) };
 }
