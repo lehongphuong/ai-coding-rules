@@ -21,7 +21,7 @@ Both binaries, `ai-coding-rules` and `ai-rules`, are the same program.
 |---|---|
 | `0` | Success. |
 | `1` | The command ran but found a problem: findings at or above the fail level, out-of-date files, write conflicts, or no match for `explain`. |
-| `2` | Unexpected error (bad config, crash). The message is printed; set `DEBUG=ai-rules` for a stack trace. |
+| `2` | Usage error (unknown command, option or target) or unexpected error (bad config, crash). The message is printed; set `DEBUG=ai-rules` for a stack trace. |
 
 ## `init`
 
@@ -30,9 +30,11 @@ Scans the repo, prints what it detected, asks which targets to generate (interac
 | flag | description |
 |---|---|
 | `--yes` | Accept defaults, no prompts. |
+| `--target <list>` | Comma-separated targets; skips the selection prompt. |
 | `--ai` | Also run the optional AI step (needs an `ai:` config section). |
+| `--dry-run` | Show what would be generated without writing anything. |
 
-Exit: `0`.
+Exit: `0`, or `1` if conflicting files were left untouched.
 
 ## `scan`
 
@@ -72,7 +74,7 @@ Exit: `0` clean, `1` findings at or above the fail level, `2` error.
 
 For CI. Runs `doctor` and a `generate` dry run. Fails when any configured target file would be created, updated or is in conflict, or when `doctor` fails. Prints a hint to run `ai-rules generate`.
 
-Accepts the `doctor` flags (`--format`, `--strict`).
+Accepts the `doctor` flags (`--format`, `--strict`). Out-of-date files are reported as `outdated` error findings, so they also show up in JSON and SARIF output.
 
 Exit: `0` / `1` / `2`.
 
