@@ -42,19 +42,21 @@ export function parsePyproject(text: string, path: string): PyProject {
   let section = '';
   let arrayKey: string | undefined;
   const lines = text.split('\n');
-  const addStrings = (line: string, lineNo: number, pointer: string): void => {
-    for (const m of line.matchAll(/["']([^"']+)["']/g)) {
-      const name = pyName(m[1]!);
+  /** Add deps from an array fragment; returns true when the array closes on this line. */
+  const addStrings = (fragment: string, lineNo: number, pointer: string): boolean => {
+    const { strings, closed } = scanArray(fragment);
+    for (const str of strings) {
+      const name = pyName(str);
       if (name) result.deps.push({ name, evidence: ev(path, `#${pointer}`, lineNo) });
     }
+    return closed;
   };
 
   lines.forEach((raw, i) => {
     const lineNo = i + 1;
     const line = raw.replace(/\s+#.*$/, '').trim();
     if (arrayKey !== undefined) {
-      addStrings(line.replace(/\].*$/, ''), lineNo, `${section}.${arrayKey}`);
-      if (line.includes(']')) arrayKey = undefined;
+      if (addStrings(raw, lineNo, `${section}.${arrayKey}`)) arrayKey = undefined;
       return;
     }
     const header = /^\[\[?([^\]]+)\]\]?$/.exec(line);
@@ -74,8 +76,7 @@ export function parsePyproject(text: string, path: string): PyProject {
     }
     if (ARRAY_SECTIONS.test(section) && (section !== 'project' || key === 'dependencies')) {
       if (value.startsWith('[')) {
-        addStrings(value.slice(1).replace(/\].*$/, ''), lineNo, `${section}.${key}`);
-        if (!value.includes(']')) arrayKey = key;
+        if (!addStrings(value.slice(1), lineNo, `${section}.${key}`)) arrayKey = key;
       }
     } else if (TABLE_SECTIONS.test(section) && key !== 'python') {
       const name = pyName(key);
@@ -85,6 +86,28 @@ export function parsePyproject(text: string, path: string): PyProject {
     }
   });
   return result;
+}
+
+/** Quoted strings in a TOML array fragment, stopping at an unquoted `]` or `#`. */
+export function scanArray(fragment: string): { strings: string[]; closed: boolean } {
+  const strings: string[] = [];
+  let i = 0;
+  while (i < fragment.length) {
+    const c = fragment[i]!;
+    if (c === '"' || c === "'") {
+      const end = fragment.indexOf(c, i + 1);
+      if (end === -1) break;
+      strings.push(fragment.slice(i + 1, end));
+      i = end + 1;
+    } else if (c === ']') {
+      return { strings, closed: true };
+    } else if (c === '#') {
+      break;
+    } else {
+      i++;
+    }
+  }
+  return { strings, closed: false };
 }
 
 function unquote(v: string): string {

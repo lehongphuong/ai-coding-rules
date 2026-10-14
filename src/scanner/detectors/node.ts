@@ -284,10 +284,16 @@ function detectLanguage(files: FileIndex, dir: string, dep: DepLookup, pkgPath: 
         fact('typescriptStrict', strict, dir, [ev(tsconfig, '#compilerOptions.strict')], 0.95),
       );
     }
-  } else {
+  } else if (!isWorkspaceRoot(files, dir)) {
     out.push(fact('language', 'javascript', dir, [ev(pkgPath)], 0.9));
   }
   return out;
+}
+
+/** A monorepo root package.json usually only orchestrates; it says nothing about language. */
+function isWorkspaceRoot(files: FileIndex, dir: string): boolean {
+  const pkg = files.readJson<Record<string, unknown>>(joinPath(dir, 'package.json'));
+  return files.has(joinPath(dir, 'pnpm-workspace.yaml')) || pkg?.workspaces !== undefined;
 }
 
 function detectRuntime(
