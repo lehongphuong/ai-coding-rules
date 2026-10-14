@@ -1,0 +1,467 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderers (snapshots) > agents: lean 1`] = `
+{
+  "AGENTS.md": "# acme
+
+Monorepo for the Acme apps.
+
+<!-- ai-rules:begin id=overview hash=d34b6583 -->
+## Project overview
+- pnpm monorepo with a NestJS API and a Flutter app.
+<!-- ai-rules:end id=overview -->
+
+<!-- ai-rules:begin id=commands hash=78ba6901 -->
+## Commands
+- Use \`pnpm\` for all package commands; never use npm or yarn.
+- Test: \`pnpm test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=code-style hash=60726b80 -->
+## Code style
+- Keep TypeScript \`strict\` mode on; do not use \`any\`.
+<!-- ai-rules:end id=code-style -->
+
+<!-- ai-rules:begin id=architecture hash=de884f19 -->
+## Architecture
+- Group features by domain folder. _(inferred)_
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=security hash=464045ed -->
+## Security
+- Never commit \`.env\` files or secrets.
+<!-- ai-rules:end id=security -->
+",
+  "apps/api/AGENTS.md": "# @acme/api
+
+NestJS · TypeScript
+
+<!-- ai-rules:begin id=commands hash=3f16382b -->
+## Commands
+- Test: \`pnpm --filter @acme/api test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=architecture hash=0e5ea8d1 -->
+## Architecture
+- Organise code in NestJS modules under \`src/\`.
+<!-- ai-rules:end id=architecture -->
+",
+  "apps/mobile/AGENTS.md": "# mobile
+
+Flutter · Dart
+
+<!-- ai-rules:begin id=architecture hash=c3e9fceb -->
+## Architecture
+- Use Riverpod providers for state.
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=testing hash=34721729 -->
+## Testing
+- Put widget tests in \`test/\` next to the feature name.
+<!-- ai-rules:end id=testing -->
+",
+}
+`;
+
+exports[`renderers (snapshots) > agents: with evidence comments 1`] = `
+{
+  "AGENTS.md": "# acme
+
+Monorepo for the Acme apps.
+
+<!-- ai-rules:begin id=overview hash=83aee443 -->
+## Project overview
+- pnpm monorepo with a NestJS API and a Flutter app. <!-- from: pnpm-workspace.yaml, package.json#workspaces -->
+<!-- ai-rules:end id=overview -->
+
+<!-- ai-rules:begin id=commands hash=f96a8872 -->
+## Commands
+- Use \`pnpm\` for all package commands; never use npm or yarn. <!-- from: pnpm-lock.yaml -->
+- Test: \`pnpm test\` <!-- from: package.json#scripts.test -->
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=code-style hash=5fa71681 -->
+## Code style
+- Keep TypeScript \`strict\` mode on; do not use \`any\`. <!-- from: tsconfig.json#compilerOptions.strict, a.json, b.json +1 -->
+<!-- ai-rules:end id=code-style -->
+
+<!-- ai-rules:begin id=architecture hash=193b7ca5 -->
+## Architecture
+- Group features by domain folder. _(inferred)_ <!-- from: (ai) -->
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=security hash=6aadb73a -->
+## Security
+- Never commit \`.env\` files or secrets. <!-- from: .gitignore -->
+<!-- ai-rules:end id=security -->
+",
+  "apps/api/AGENTS.md": "# @acme/api
+
+NestJS · TypeScript
+
+<!-- ai-rules:begin id=commands hash=bdeaaac2 -->
+## Commands
+- Test: \`pnpm --filter @acme/api test\` <!-- from: apps/api/package.json -->
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=architecture hash=d5261622 -->
+## Architecture
+- Organise code in NestJS modules under \`src/\`. <!-- from: apps/api/package.json#dependencies.@nestjs/core -->
+<!-- ai-rules:end id=architecture -->
+",
+  "apps/mobile/AGENTS.md": "# mobile
+
+Flutter · Dart
+
+<!-- ai-rules:begin id=architecture hash=d07ef859 -->
+## Architecture
+- Use Riverpod providers for state. <!-- from: apps/mobile/pubspec.yaml#dependencies.flutter_riverpod -->
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=testing hash=fef47a22 -->
+## Testing
+- Put widget tests in \`test/\` next to the feature name. <!-- from: apps/mobile/package.json -->
+<!-- ai-rules:end id=testing -->
+",
+}
+`;
+
+exports[`renderers (snapshots) > claude: full mode matches agents layout 1`] = `
+{
+  "CLAUDE.md": "# acme
+
+Monorepo for the Acme apps.
+
+<!-- ai-rules:begin id=overview hash=d34b6583 -->
+## Project overview
+- pnpm monorepo with a NestJS API and a Flutter app.
+<!-- ai-rules:end id=overview -->
+
+<!-- ai-rules:begin id=commands hash=78ba6901 -->
+## Commands
+- Use \`pnpm\` for all package commands; never use npm or yarn.
+- Test: \`pnpm test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=code-style hash=60726b80 -->
+## Code style
+- Keep TypeScript \`strict\` mode on; do not use \`any\`.
+<!-- ai-rules:end id=code-style -->
+
+<!-- ai-rules:begin id=architecture hash=de884f19 -->
+## Architecture
+- Group features by domain folder. _(inferred)_
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=security hash=464045ed -->
+## Security
+- Never commit \`.env\` files or secrets.
+<!-- ai-rules:end id=security -->
+",
+  "apps/api/CLAUDE.md": "# @acme/api
+
+NestJS · TypeScript
+
+<!-- ai-rules:begin id=commands hash=3f16382b -->
+## Commands
+- Test: \`pnpm --filter @acme/api test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=architecture hash=0e5ea8d1 -->
+## Architecture
+- Organise code in NestJS modules under \`src/\`.
+<!-- ai-rules:end id=architecture -->
+",
+  "apps/mobile/CLAUDE.md": "# mobile
+
+Flutter · Dart
+
+<!-- ai-rules:begin id=architecture hash=c3e9fceb -->
+## Architecture
+- Use Riverpod providers for state.
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=testing hash=34721729 -->
+## Testing
+- Put widget tests in \`test/\` next to the feature name.
+<!-- ai-rules:end id=testing -->
+",
+}
+`;
+
+exports[`renderers (snapshots) > claude: lean 1`] = `
+{
+  "CLAUDE.md": "# acme
+
+<!-- ai-rules:begin id=imports hash=918b1c90 -->
+@AGENTS.md
+<!-- ai-rules:end id=imports -->
+
+<!-- ai-rules:begin id=claude hash=81464525 -->
+## Claude Code notes
+- Run the test command from AGENTS.md after changes and fix failures before finishing.
+- Prefer editing existing files over creating new ones.
+- Keep \`/memory\` notes short; shared project rules belong in AGENTS.md.
+<!-- ai-rules:end id=claude -->
+",
+  "apps/api/CLAUDE.md": "# @acme/api
+
+<!-- ai-rules:begin id=imports hash=918b1c90 -->
+@AGENTS.md
+<!-- ai-rules:end id=imports -->
+
+<!-- ai-rules:begin id=claude hash=81464525 -->
+## Claude Code notes
+- Run the test command from AGENTS.md after changes and fix failures before finishing.
+- Prefer editing existing files over creating new ones.
+- Keep \`/memory\` notes short; shared project rules belong in AGENTS.md.
+<!-- ai-rules:end id=claude -->
+",
+  "apps/mobile/CLAUDE.md": "# mobile
+
+<!-- ai-rules:begin id=imports hash=918b1c90 -->
+@AGENTS.md
+<!-- ai-rules:end id=imports -->
+
+<!-- ai-rules:begin id=claude hash=9884c2fb -->
+## Claude Code notes
+- Prefer editing existing files over creating new ones.
+- Keep \`/memory\` notes short; shared project rules belong in AGENTS.md.
+<!-- ai-rules:end id=claude -->
+",
+}
+`;
+
+exports[`renderers (snapshots) > copilot: lean 1`] = `
+{
+  ".github/copilot-instructions.md": "# acme
+
+Monorepo for the Acme apps.
+
+<!-- ai-rules:begin id=overview hash=d34b6583 -->
+## Project overview
+- pnpm monorepo with a NestJS API and a Flutter app.
+<!-- ai-rules:end id=overview -->
+
+<!-- ai-rules:begin id=commands hash=78ba6901 -->
+## Commands
+- Use \`pnpm\` for all package commands; never use npm or yarn.
+- Test: \`pnpm test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=code-style hash=60726b80 -->
+## Code style
+- Keep TypeScript \`strict\` mode on; do not use \`any\`.
+<!-- ai-rules:end id=code-style -->
+
+<!-- ai-rules:begin id=architecture hash=de884f19 -->
+## Architecture
+- Group features by domain folder. _(inferred)_
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=security hash=464045ed -->
+## Security
+- Never commit \`.env\` files or secrets.
+<!-- ai-rules:end id=security -->
+",
+  ".github/instructions/apps-api.instructions.md": "---
+applyTo: "apps/api/**"
+---
+
+# @acme/api
+
+NestJS · TypeScript
+
+<!-- ai-rules:begin id=commands hash=3f16382b -->
+## Commands
+- Test: \`pnpm --filter @acme/api test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=architecture hash=0e5ea8d1 -->
+## Architecture
+- Organise code in NestJS modules under \`src/\`.
+<!-- ai-rules:end id=architecture -->
+",
+  ".github/instructions/apps-mobile.instructions.md": "---
+applyTo: "apps/mobile/**"
+---
+
+# mobile
+
+Flutter · Dart
+
+<!-- ai-rules:begin id=architecture hash=c3e9fceb -->
+## Architecture
+- Use Riverpod providers for state.
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=testing hash=34721729 -->
+## Testing
+- Put widget tests in \`test/\` next to the feature name.
+<!-- ai-rules:end id=testing -->
+",
+}
+`;
+
+exports[`renderers (snapshots) > cursor: lean 1`] = `
+{
+  ".cursor/rules/apps-api-architecture.mdc": "---
+description: Architecture for @acme/api
+globs: apps/api/**
+alwaysApply: false
+---
+
+<!-- ai-rules:begin id=architecture hash=0e5ea8d1 -->
+## Architecture
+- Organise code in NestJS modules under \`src/\`.
+<!-- ai-rules:end id=architecture -->
+",
+  ".cursor/rules/apps-api-commands.mdc": "---
+description: Commands for @acme/api
+globs: apps/api/**
+alwaysApply: false
+---
+
+<!-- ai-rules:begin id=commands hash=3f16382b -->
+## Commands
+- Test: \`pnpm --filter @acme/api test\`
+<!-- ai-rules:end id=commands -->
+",
+  ".cursor/rules/apps-mobile-architecture.mdc": "---
+description: Architecture for mobile
+globs: apps/mobile/**
+alwaysApply: false
+---
+
+<!-- ai-rules:begin id=architecture hash=c3e9fceb -->
+## Architecture
+- Use Riverpod providers for state.
+<!-- ai-rules:end id=architecture -->
+",
+  ".cursor/rules/apps-mobile-testing.mdc": "---
+description: Testing for mobile
+globs: apps/mobile/**
+alwaysApply: false
+---
+
+<!-- ai-rules:begin id=testing hash=34721729 -->
+## Testing
+- Put widget tests in \`test/\` next to the feature name.
+<!-- ai-rules:end id=testing -->
+",
+  ".cursor/rules/root-architecture.mdc": "---
+description: Architecture for acme
+alwaysApply: false
+---
+
+<!-- ai-rules:begin id=architecture hash=de884f19 -->
+## Architecture
+- Group features by domain folder. _(inferred)_
+<!-- ai-rules:end id=architecture -->
+",
+  ".cursor/rules/root-code-style.mdc": "---
+description: Code style for acme
+alwaysApply: true
+---
+
+<!-- ai-rules:begin id=code-style hash=60726b80 -->
+## Code style
+- Keep TypeScript \`strict\` mode on; do not use \`any\`.
+<!-- ai-rules:end id=code-style -->
+",
+  ".cursor/rules/root-commands.mdc": "---
+description: Commands for acme
+alwaysApply: true
+---
+
+<!-- ai-rules:begin id=commands hash=78ba6901 -->
+## Commands
+- Use \`pnpm\` for all package commands; never use npm or yarn.
+- Test: \`pnpm test\`
+<!-- ai-rules:end id=commands -->
+",
+  ".cursor/rules/root-overview.mdc": "---
+description: Project overview for acme
+alwaysApply: true
+---
+
+<!-- ai-rules:begin id=overview hash=d34b6583 -->
+## Project overview
+- pnpm monorepo with a NestJS API and a Flutter app.
+<!-- ai-rules:end id=overview -->
+",
+  ".cursor/rules/root-security.mdc": "---
+description: Security for acme
+alwaysApply: false
+---
+
+<!-- ai-rules:begin id=security hash=464045ed -->
+## Security
+- Never commit \`.env\` files or secrets.
+<!-- ai-rules:end id=security -->
+",
+}
+`;
+
+exports[`renderers (snapshots) > gemini: lean 1`] = `
+{
+  "GEMINI.md": "# acme
+
+Monorepo for the Acme apps.
+
+<!-- ai-rules:begin id=overview hash=d34b6583 -->
+## Project overview
+- pnpm monorepo with a NestJS API and a Flutter app.
+<!-- ai-rules:end id=overview -->
+
+<!-- ai-rules:begin id=commands hash=78ba6901 -->
+## Commands
+- Use \`pnpm\` for all package commands; never use npm or yarn.
+- Test: \`pnpm test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=code-style hash=60726b80 -->
+## Code style
+- Keep TypeScript \`strict\` mode on; do not use \`any\`.
+<!-- ai-rules:end id=code-style -->
+
+<!-- ai-rules:begin id=architecture hash=de884f19 -->
+## Architecture
+- Group features by domain folder. _(inferred)_
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=security hash=464045ed -->
+## Security
+- Never commit \`.env\` files or secrets.
+<!-- ai-rules:end id=security -->
+",
+  "apps/api/GEMINI.md": "# @acme/api
+
+NestJS · TypeScript
+
+<!-- ai-rules:begin id=commands hash=3f16382b -->
+## Commands
+- Test: \`pnpm --filter @acme/api test\`
+<!-- ai-rules:end id=commands -->
+
+<!-- ai-rules:begin id=architecture hash=0e5ea8d1 -->
+## Architecture
+- Organise code in NestJS modules under \`src/\`.
+<!-- ai-rules:end id=architecture -->
+",
+  "apps/mobile/GEMINI.md": "# mobile
+
+Flutter · Dart
+
+<!-- ai-rules:begin id=architecture hash=c3e9fceb -->
+## Architecture
+- Use Riverpod providers for state.
+<!-- ai-rules:end id=architecture -->
+
+<!-- ai-rules:begin id=testing hash=34721729 -->
+## Testing
+- Put widget tests in \`test/\` next to the feature name.
+<!-- ai-rules:end id=testing -->
+",
+}
+`;
