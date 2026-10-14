@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470" role="img" aria-label="ai-rules doctor finding conflicts, stale commands and duplicated instructions">
+  <defs>
+    <style>
+      .t { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; font-size: 14.5px; fill: #cbd5e1; white-space: pre; }
+      .dim { fill: #64748b; } .file { fill: #f8fafc; font-weight: 700; } .err { fill: #f87171; } .warn { fill: #fbbf24; }
+      .ok { fill: #4ade80; } .id { fill: #c4b5fd; } .loc { fill: #7dd3fc; } .prompt { fill: #4ade80; }
+    </style>
+  </defs>
+  <rect width="960" height="470" rx="14" fill="#0b1020"/>
+  <rect width="960" height="40" rx="14" fill="#151b3a"/>
+  <rect y="26" width="960" height="14" fill="#151b3a"/>
+  <circle cx="24" cy="20" r="6.5" fill="#f87171"/><circle cx="46" cy="20" r="6.5" fill="#fbbf24"/><circle cx="68" cy="20" r="6.5" fill="#4ade80"/>
+  <text x="480" y="25" text-anchor="middle" class="t dim" font-size="13">~/my-app — ai-rules doctor</text>
+
+  <text x="24" y="74" class="t"><tspan class="prompt">❯</tspan> npx ai-rules doctor</text>
+
+  <text x="24" y="108" class="t file">CLAUDE.md</text>
+  <text x="24" y="132" class="t">  <tspan class="err">✖</tspan> <tspan class="id">conflict/repo </tspan>  <tspan class="loc">CLAUDE.md:5</tspan>  "Run `npm test` before every commit." — repo uses pnpm</text>
+  <text x="24" y="154" class="t dim">      ↳ Replace npm commands with pnpm (pnpm-lock.yaml)</text>
+  <text x="24" y="178" class="t">  <tspan class="err">✖</tspan> <tspan class="id">conflict/files</tspan>  <tspan class="loc">CLAUDE.md:6</tspan>  says "jest" but .cursor/rules/testing.mdc:9 says "vitest"</text>
+  <text x="24" y="202" class="t">  <tspan class="warn">⚠</tspan> <tspan class="id">duplicate     </tspan>  <tspan class="loc">CLAUDE.md:8-18</tspan> ≈ AGENTS.md:9-19 (93% similar)</text>
+  <text x="24" y="224" class="t dim">      ↳ Keep it in one file and import it (`@AGENTS.md` in CLAUDE.md)</text>
+
+  <text x="24" y="258" class="t file">AGENTS.md</text>
+  <text x="24" y="282" class="t">  <tspan class="warn">⚠</tspan> <tspan class="id">stale/command </tspan>  <tspan class="loc">AGENTS.md:6</tspan>  `pnpm test:e2e` — script is not defined in package.json</text>
+  <text x="24" y="306" class="t">  <tspan class="warn">⚠</tspan> <tspan class="id">stale/path    </tspan>  <tspan class="loc">AGENTS.md:7</tspan>  references `src/legacy/` — no such file or directory</text>
+
+  <text x="24" y="340" class="t file">Tokens</text>
+  <text x="24" y="364" class="t dim">  ℹ cursor ≈ 256 tokens · codex ≈ 183 · claude ≈ 159</text>
+
+  <text x="24" y="398" class="t"><tspan class="err">✖ 6 errors, 3 warnings</tspan></text>
+  <text x="24" y="440" class="t"><tspan class="prompt">❯</tspan> npx ai-rules generate <tspan class="dim">&amp;&amp;</tspan> npx ai-rules check   <tspan class="ok">✔ generated files are up to date</tspan></text>
+</svg>
