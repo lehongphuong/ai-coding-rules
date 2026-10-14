@@ -1,0 +1,7 @@
+- id: ai-rules-check
+  name: ai-rules check
+  description: Check that AI agent instruction files are up to date, consistent and free of stale references.
+  entry: ai-rules check
+  language: node
+  pass_filenames: false
+  always_run: true

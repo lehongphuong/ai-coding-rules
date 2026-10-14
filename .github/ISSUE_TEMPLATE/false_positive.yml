@@ -1,0 +1,48 @@
+name: Doctor false positive
+description: "`ai-rules doctor` or `check` reported a finding that is wrong."
+labels: [doctor, false-positive]
+body:
+  - type: dropdown
+    id: check
+    attributes:
+      label: Check id
+      options:
+        - conflict/repo
+        - conflict/files
+        - stale/command
+        - stale/path
+        - duplicate
+        - budget
+        - legacy
+        - empty
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `npx ai-coding-rules --version`.
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: Finding
+      description: Paste the finding exactly as printed (or the JSON from `ai-rules doctor --format json`).
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: why-wrong
+    attributes:
+      label: Why is it wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The instruction file lines involved and the repo files that matter (manifest, lockfile names, scripts).
+      render: markdown
+    validations:
+      required: true
