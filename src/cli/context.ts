@@ -99,3 +99,9 @@ export function packageVersion(): string {
     dir = parent;
   }
 }
+
+/** A command implementation: returns the exit code. `args` are positional arguments. */
+export type Handler<O> = (ctx: Ctx, opts: O, args: string[]) => Promise<number> | number;
+
+/** Wraps a handler into a commander action (builds the Ctx, records the exit code). */
+export type Bind = <O>(handler: Handler<O>) => (...args: unknown[]) => Promise<void>;
