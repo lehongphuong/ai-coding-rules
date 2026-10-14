@@ -26,8 +26,14 @@ const customRuleSchema = z
 export const configFileSchema = z
   .object({
     targets: z.array(z.enum(TARGET_IDS)).min(1),
-    claude: z.object({ mode: z.enum(['import', 'full']) }).partial().strict(),
-    output: z.object({ evidence: z.enum(['none', 'comment']) }).partial().strict(),
+    claude: z
+      .object({ mode: z.enum(['import', 'full']) })
+      .partial()
+      .strict(),
+    output: z
+      .object({ evidence: z.enum(['none', 'comment']) })
+      .partial()
+      .strict(),
     ignore: z.array(z.string()),
     rules: z
       .object({

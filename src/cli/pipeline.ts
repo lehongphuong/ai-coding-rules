@@ -76,7 +76,11 @@ export function parseTargets(value: string | undefined): TargetId[] | undefined 
 
 /** CLAUDE.md in import mode is `@AGENTS.md`, so the agents target must be rendered too. */
 export function withImportedTargets(targets: TargetId[], config: ResolvedConfig): TargetId[] {
-  if (targets.includes('claude') && config.claude.mode === 'import' && !targets.includes('agents')) {
+  if (
+    targets.includes('claude') &&
+    config.claude.mode === 'import' &&
+    !targets.includes('agents')
+  ) {
     return ['agents', ...targets];
   }
   return targets;
@@ -94,7 +98,9 @@ export async function planGeneration(
       const extra = await enhanceWithAi(facts, config, { env: options.env, warn: options.warn });
       ruleSet.rules = [...ruleSet.rules, ...extra];
     } catch (err) {
-      options.warn?.(`AI step failed, continuing without inferred rules: ${(err as Error).message}`);
+      options.warn?.(
+        `AI step failed, continuing without inferred rules: ${(err as Error).message}`,
+      );
     }
   }
   const targets = withImportedTargets(options.targets ?? config.targets, config);

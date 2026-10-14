@@ -50,7 +50,11 @@ function count(plans: readonly WritePlan[], status: WriteStatus): number {
 }
 
 /** Shared by `generate` and `init`. */
-export async function runGenerate(ctx: Ctx, opts: GenerateOptions, hooks: GenerateHooks = {}): Promise<number> {
+export async function runGenerate(
+  ctx: Ctx,
+  opts: GenerateOptions,
+  hooks: GenerateHooks = {},
+): Promise<number> {
   const { c } = ctx;
   const project = hooks.project ?? loadProject(ctx.cwd);
   const genOpts = {
@@ -63,7 +67,12 @@ export async function runGenerate(ctx: Ctx, opts: GenerateOptions, hooks: Genera
   };
   let gen = await planGeneration(project, genOpts);
   let conflicts = gen.plans.filter((p) => p.status === 'conflict');
-  if (conflicts.length && !opts.force && hooks.confirmForce && (await hooks.confirmForce(conflicts))) {
+  if (
+    conflicts.length &&
+    !opts.force &&
+    hooks.confirmForce &&
+    (await hooks.confirmForce(conflicts))
+  ) {
     gen = await planGeneration(project, { ...genOpts, force: true, ruleSet: gen.ruleSet });
     conflicts = gen.plans.filter((p) => p.status === 'conflict');
   }
@@ -90,7 +99,8 @@ export async function runGenerate(ctx: Ctx, opts: GenerateOptions, hooks: Genera
       ),
     );
   } else {
-    if (plans.length === 0) ctx.info(c.dim('No files to generate for targets: ' + gen.targets.join(', ')));
+    if (plans.length === 0)
+      ctx.info(c.dim('No files to generate for targets: ' + gen.targets.join(', ')));
     else if (!ctx.quiet) ctx.print(renderPlanTable(plans, c).join('\n'));
     if (opts.diff) {
       for (const p of plans) if (p.diff) ctx.print(`\n${colorDiff(p.diff, c)}`);
@@ -100,7 +110,9 @@ export async function runGenerate(ctx: Ctx, opts: GenerateOptions, hooks: Genera
     if (opts.dryRun) {
       ctx.info(c.dim(`Dry run: ${changes} file(s) would be written, nothing changed.`));
     } else {
-      ctx.info(`${c.green('✔')} ${written.length} file(s) written, ${count(plans, 'unchanged')} unchanged.`);
+      ctx.info(
+        `${c.green('✔')} ${written.length} file(s) written, ${count(plans, 'unchanged')} unchanged.`,
+      );
     }
   }
   if (conflicts.length) {

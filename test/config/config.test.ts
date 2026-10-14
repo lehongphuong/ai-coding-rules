@@ -41,17 +41,23 @@ describe('loadConfig', () => {
     expect(loadConfig(root)).toEqual({ config: defaultConfig() });
   });
 
-  it.each(['.ai-rules/config.yaml', '.ai-rules/config.yml', '.ai-rules.yaml'])('reads %s', (path) => {
-    put(path, 'targets: [cursor]\n');
-    const loaded = loadConfig(root);
-    expect(loaded.path).toBe(path);
-    expect(loaded.config.targets).toEqual(['cursor']);
-  });
+  it.each(['.ai-rules/config.yaml', '.ai-rules/config.yml', '.ai-rules.yaml'])(
+    'reads %s',
+    (path) => {
+      put(path, 'targets: [cursor]\n');
+      const loaded = loadConfig(root);
+      expect(loaded.path).toBe(path);
+      expect(loaded.config.targets).toEqual(['cursor']);
+    },
+  );
 
   it('prefers .ai-rules/config.yaml over .ai-rules.yaml', () => {
     put('.ai-rules.yaml', 'targets: [gemini]\n');
     put('.ai-rules/config.yaml', 'targets: [copilot]\n');
-    expect(loadConfig(root)).toMatchObject({ path: '.ai-rules/config.yaml', config: { targets: ['copilot'] } });
+    expect(loadConfig(root)).toMatchObject({
+      path: '.ai-rules/config.yaml',
+      config: { targets: ['copilot'] },
+    });
   });
 
   it('treats an empty file as defaults', () => {
@@ -62,7 +68,14 @@ describe('loadConfig', () => {
   it('deep-merges nested objects onto defaults', () => {
     put(
       '.ai-rules/config.yaml',
-      ['doctor:', '  failOn: warning', '  budget:', '    perFile: 500', 'claude:', '  mode: full'].join('\n'),
+      [
+        'doctor:',
+        '  failOn: warning',
+        '  budget:',
+        '    perFile: 500',
+        'claude:',
+        '  mode: full',
+      ].join('\n'),
     );
     const { config } = loadConfig(root);
     expect(config.doctor).toEqual({
@@ -113,7 +126,11 @@ ai:
       scope: '',
     });
     expect(config.doctor.disable).toEqual(['budget']);
-    expect(config.ai).toEqual({ provider: 'ollama', model: 'llama3.1', baseUrl: 'http://localhost:11434' });
+    expect(config.ai).toEqual({
+      provider: 'ollama',
+      model: 'llama3.1',
+      baseUrl: 'http://localhost:11434',
+    });
   });
 });
 
@@ -135,14 +152,18 @@ describe('validation errors', () => {
   it('validates targets, sections and check ids', () => {
     expect(errorOf(() => parseConfig('targets: [windsurf]\n')).issues[0]).toMatch(/^targets\.0: /);
     expect(errorOf(() => parseConfig('targets: []\n')).issues[0]).toMatch(/^targets: /);
-    expect(errorOf(() => parseConfig('doctor:\n  disable: [nope]\n')).issues[0]).toMatch(/^doctor\.disable\.0: /);
+    expect(errorOf(() => parseConfig('doctor:\n  disable: [nope]\n')).issues[0]).toMatch(
+      /^doctor\.disable\.0: /,
+    );
     expect(errorOf(() => parseConfig('doctor:\n  duplicateThreshold: 2\n')).issues[0]).toMatch(
       /^doctor\.duplicateThreshold: /,
     );
   });
 
   it('validates custom rules', () => {
-    const missing = errorOf(() => parseConfig('rules:\n  custom:\n    - id: team/a\n      section: dos-donts\n'));
+    const missing = errorOf(() =>
+      parseConfig('rules:\n  custom:\n    - id: team/a\n      section: dos-donts\n'),
+    );
     expect(missing.issues).toEqual(['rules.custom.0.text: Required']);
     const badSection = errorOf(() =>
       parseConfig('rules:\n  custom:\n    - { id: team/a, section: misc, text: Hi }\n'),
@@ -169,7 +190,9 @@ describe('validation errors', () => {
     expect(errorOf(() => parseConfig('targets: [agents\n')).message).toMatch(
       /^\.ai-rules\/config\.yaml: invalid YAML: /,
     );
-    expect(errorOf(() => parseConfig('- agents\n')).issues[0]).toMatch(/^\(root\): Expected object/);
+    expect(errorOf(() => parseConfig('- agents\n')).issues[0]).toMatch(
+      /^\(root\): Expected object/,
+    );
   });
 });
 
@@ -185,7 +208,10 @@ describe('renderConfigYaml / writeConfig', () => {
   it('renders commented YAML that round-trips through loadConfig', () => {
     const partial = {
       targets: ['agents', 'cursor'] as const,
-      rules: { disable: ['nestjs/*'], custom: [{ id: 'team/x', section: 'security' as const, text: 'No PII in logs.' }] },
+      rules: {
+        disable: ['nestjs/*'],
+        custom: [{ id: 'team/x', section: 'security' as const, text: 'No PII in logs.' }],
+      },
       ai: { provider: 'anthropic' as const, model: 'claude-x' },
     };
     const yaml = renderConfigYaml({ ...partial, targets: [...partial.targets] });

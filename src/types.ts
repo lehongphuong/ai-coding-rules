@@ -285,7 +285,17 @@ export interface InstructionDoc {
 }
 
 export interface Claim {
-  key: 'packageManager' | 'testRunner' | 'formatter' | 'linter' | 'indent' | 'quotes' | 'semicolons' | 'language' | 'command' | 'path';
+  key:
+    | 'packageManager'
+    | 'testRunner'
+    | 'formatter'
+    | 'linter'
+    | 'indent'
+    | 'quotes'
+    | 'semicolons'
+    | 'language'
+    | 'command'
+    | 'path';
   value: string;
   negated: boolean;
   file: string;

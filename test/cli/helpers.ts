@@ -70,9 +70,21 @@ export function fakeFacts(root: string): ProjectFacts {
         meta: { version: '10.2.0' },
         evidence: [{ file: 'apps/api/package.json', pointer: '#dependencies.@nestjs/core' }],
       }),
-      fact({ key: 'agentFile', value: '.cursor/rules/old.mdc', meta: { target: 'cursor' }, evidence: [{ file: '.cursor/rules/old.mdc' }] }),
+      fact({
+        key: 'agentFile',
+        value: '.cursor/rules/old.mdc',
+        meta: { target: 'cursor' },
+        evidence: [{ file: '.cursor/rules/old.mdc' }],
+      }),
     ],
-    scripts: [{ source: 'npm', name: 'test', scope: '', evidence: { file: 'package.json', pointer: '#scripts.test' } }],
+    scripts: [
+      {
+        source: 'npm',
+        name: 'test',
+        scope: '',
+        evidence: { file: 'package.json', pointer: '#scripts.test' },
+      },
+    ],
   };
 }
 
@@ -101,7 +113,9 @@ export function fakeRuleSet(): RuleSet {
         section: 'architecture',
         scope: 'apps/api',
         text: 'Group features into Nest modules.',
-        evidence: [{ file: 'apps/api/package.json', pointer: '#dependencies.@nestjs/core', line: 12 }],
+        evidence: [
+          { file: 'apps/api/package.json', pointer: '#dependencies.@nestjs/core', line: 12 },
+        ],
       }),
     ],
   };
@@ -116,12 +130,20 @@ export function fakeRender(_rs: RuleSet, targets: readonly TargetId[]): Rendered
     copilot: '.github/copilot-instructions.md',
     gemini: 'GEMINI.md',
   };
-  return targets.map((target) => ({ path: paths[target], target, blocks: [{ id: 'overview', content: '# demo' }] }));
+  return targets.map((target) => ({
+    path: paths[target],
+    target,
+    blocks: [{ id: 'overview', content: '# demo' }],
+  }));
 }
 
 /** planWrites fake: status per path from `statuses` (default create). */
 export function fakePlanner(statuses: Record<string, WriteStatus> = {}) {
-  return (_root: string, files: readonly RenderedFile[], opts: { force?: boolean } = {}): WritePlan[] =>
+  return (
+    _root: string,
+    files: readonly RenderedFile[],
+    opts: { force?: boolean } = {},
+  ): WritePlan[] =>
     files.map((f) => {
       let status = statuses[f.path] ?? 'create';
       if (status === 'conflict' && opts.force) status = 'update';
@@ -149,7 +171,19 @@ export function fakeApply(root: string, plans: readonly WritePlan[]): string[] {
 }
 
 export const sampleFindings: Finding[] = [
-  { checkId: 'conflict/repo', severity: 'error', message: 'says npm but repo uses pnpm', file: 'CLAUDE.md', line: 3 },
-  { checkId: 'stale/path', severity: 'warning', message: '`src/old.ts` does not exist', file: 'AGENTS.md', line: 9 },
+  {
+    checkId: 'conflict/repo',
+    severity: 'error',
+    message: 'says npm but repo uses pnpm',
+    file: 'CLAUDE.md',
+    line: 3,
+  },
+  {
+    checkId: 'stale/path',
+    severity: 'warning',
+    message: '`src/old.ts` does not exist',
+    file: 'AGENTS.md',
+    line: 9,
+  },
   { checkId: 'budget', severity: 'info', message: 'Claude Code ≈ 1.2k tokens', file: 'CLAUDE.md' },
 ];

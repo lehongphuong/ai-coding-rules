@@ -30,7 +30,10 @@ export function globToRegExp(pattern: string): RegExp {
         re += '\\{';
         i += 1;
       } else {
-        const alts = pattern.slice(i + 1, end).split(',').map(escapeRegExp);
+        const alts = pattern
+          .slice(i + 1, end)
+          .split(',')
+          .map(escapeRegExp);
         re += `(?:${alts.join('|')})`;
         i = end + 1;
       }

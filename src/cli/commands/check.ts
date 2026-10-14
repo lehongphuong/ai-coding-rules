@@ -38,7 +38,10 @@ export async function runCheck(ctx: Ctx, opts: DoctorOptions): Promise<number> {
   const isFailed = failed(doctorFindings, failOn) || outdated.length > 0;
   const format = resolveFormat(ctx, opts);
   report(ctx, format, [...doctorFindings, ...outdated], {
-    outOfDate: outdated.map((f) => ({ path: f.file, status: plans.find((p) => p.path === f.file)?.status })),
+    outOfDate: outdated.map((f) => ({
+      path: f.file,
+      status: plans.find((p) => p.path === f.file)?.status,
+    })),
     failed: isFailed,
   });
   if (format === 'human') {

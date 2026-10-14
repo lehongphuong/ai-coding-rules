@@ -52,7 +52,10 @@ export function parseConfig(text: string, source = DEFAULT_CONFIG_PATH): Resolve
   try {
     raw = parse(text);
   } catch (err) {
-    throw new ConfigError(`${source}: invalid YAML: ${(err as Error).message.split('\n')[0]!.replace(/:$/, '')}`, source);
+    throw new ConfigError(
+      `${source}: invalid YAML: ${(err as Error).message.split('\n')[0]!.replace(/:$/, '')}`,
+      source,
+    );
   }
   if (raw === null || raw === undefined) raw = {};
   const result = configFileSchema.safeParse(raw);
@@ -92,8 +95,10 @@ const KEY_COMMENTS: Record<string, string> = {
   claude: ' CLAUDE.md style: import (@AGENTS.md + Claude notes) | full',
   output: ' Evidence comments after each rule: none | comment',
   ignore: ' Extra gitignore-style patterns skipped by the scanner',
-  rules: ' disable: rule ids or pack prefixes ("common/no-secrets", "nestjs/*")\n custom: team rules { id, section, text, scope? }',
-  doctor: ' failOn: error | warning; checks: conflict/repo, conflict/files, stale/command,\n stale/path, duplicate, budget, legacy, empty',
+  rules:
+    ' disable: rule ids or pack prefixes ("common/no-secrets", "nestjs/*")\n custom: team rules { id, section, text, scope? }',
+  doctor:
+    ' failOn: error | warning; checks: conflict/repo, conflict/files, stale/command,\n stale/path, duplicate, budget, legacy, empty',
   ai: ' Optional LLM step (generate --ai): ollama | anthropic | openai',
 };
 

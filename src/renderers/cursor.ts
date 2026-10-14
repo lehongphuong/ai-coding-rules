@@ -12,14 +12,18 @@ export const cursorRenderer: Renderer = {
     const files: RenderedFile[] = [];
     for (const scope of groupByScope(ruleSet)) {
       for (const section of groupBySection(scope.rules)) {
-        const fm: Record<string, string | boolean> = { description: `${section.title} for ${scope.name}` };
+        const fm: Record<string, string | boolean> = {
+          description: `${section.title} for ${scope.name}`,
+        };
         if (scope.dir !== '') fm.globs = `${scope.dir}/**`;
         fm.alwaysApply = scope.dir === '' && ALWAYS_APPLY.has(section.id);
         files.push({
           path: `.cursor/rules/${scopeSlug(scope.dir)}-${section.id}.mdc`,
           target: 'cursor',
           frontMatter: stringify(fm, { lineWidth: 0 }).trimEnd(),
-          blocks: [{ id: section.id, content: renderSectionBody(section.title, section.rules, options) }],
+          blocks: [
+            { id: section.id, content: renderSectionBody(section.title, section.rules, options) },
+          ],
         });
       }
     }

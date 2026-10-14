@@ -67,13 +67,22 @@ export function renderScan(facts: ProjectFacts, ctx: Pick<Ctx, 'c'>): string {
       out.push('  commands:');
       out.push(
         ...columns(
-          commands.map((f) => [`    ${f.meta?.kind ?? f.meta?.name ?? ''}`, c.cyan(String(f.value)), c.dim(evidenceOf(f, 1))]),
+          commands.map((f) => [
+            `    ${f.meta?.kind ?? f.meta?.name ?? ''}`,
+            c.cyan(String(f.value)),
+            c.dim(evidenceOf(f, 1)),
+          ]),
         ),
       );
     }
   }
   const scripts = facts.scripts.length;
-  out.push('', c.dim(`${facts.workspaces.length} workspace(s) · ${facts.facts.length} facts · ${scripts} script(s)`));
+  out.push(
+    '',
+    c.dim(
+      `${facts.workspaces.length} workspace(s) · ${facts.facts.length} facts · ${scripts} script(s)`,
+    ),
+  );
   return out.join('\n');
 }
 

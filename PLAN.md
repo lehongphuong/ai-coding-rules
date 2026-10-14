@@ -2,7 +2,7 @@
 
 > A local-first CLI that scans your repository and generates **accurate, evidence-backed instruction files** for AI coding agents (Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI, Windsurf…), then **keeps them consistent** with each other and with the code.
 
-Status: **planning** · License: MIT · Contributions welcome (see [Contributing](#11-contributing))
+Status: **v0.1 implemented** (M0–M6 scope; see [CHANGELOG.md](./CHANGELOG.md)) · License: MIT · Contributions welcome (see [Contributing](#11-contributing))
 
 ---
 

@@ -6,8 +6,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('../../src/scanner/index.js', () => ({ scan: vi.fn(), scanFiles: vi.fn() }));
 vi.mock('../../src/rules/index.js', () => ({ buildRuleSet: vi.fn() }));
 vi.mock('../../src/renderers/index.js', () => ({ renderTargets: vi.fn(), getRenderer: vi.fn() }));
-vi.mock('../../src/writer/index.js', () => ({ planWrites: vi.fn(), planWrite: vi.fn(), applyPlans: vi.fn() }));
-vi.mock('../../src/doctor/index.js', () => ({ runDoctor: vi.fn(), parseInstructionFiles: vi.fn() }));
+vi.mock('../../src/writer/index.js', () => ({
+  planWrites: vi.fn(),
+  planWrite: vi.fn(),
+  applyPlans: vi.fn(),
+}));
+vi.mock('../../src/doctor/index.js', () => ({
+  runDoctor: vi.fn(),
+  parseInstructionFiles: vi.fn(),
+}));
 vi.mock('../../src/ai/index.js', () => ({ enhanceWithAi: vi.fn() }));
 
 import { enhanceWithAi } from '../../src/ai/index.js';
@@ -84,7 +91,9 @@ describe('program', () => {
     writeFileSync(join(root, '.ai-rules/config.yaml'), 'doctor:\n  failOn: never\n');
     const r = await cli(['scan']);
     expect(r.code).toBe(2);
-    expect(r.stderr).toMatch(/^ai-rules: \.ai-rules\/config\.yaml: doctor\.failOn: Invalid enum value/);
+    expect(r.stderr).toMatch(
+      /^ai-rules: \.ai-rules\/config\.yaml: doctor\.failOn: Invalid enum value/,
+    );
     expect(r.stderr).not.toContain('    at ');
   });
 
@@ -108,7 +117,9 @@ describe('program', () => {
 
   it('uses colours only on a TTY without NO_COLOR / --no-color', async () => {
     expect((await cli(['scan'], { isTTY: true })).stdout).toContain('\u001b[');
-    expect((await cli(['scan'], { isTTY: true, env: { NO_COLOR: '1' } })).stdout).not.toContain('\u001b[');
+    expect((await cli(['scan'], { isTTY: true, env: { NO_COLOR: '1' } })).stdout).not.toContain(
+      '\u001b[',
+    );
     expect((await cli(['scan', '--no-color'], { isTTY: true })).stdout).not.toContain('\u001b[');
     expect((await cli(['scan'])).stdout).not.toContain('\u001b[');
   });
@@ -123,17 +134,27 @@ describe('scan', () => {
     expect(lines).toContain('root');
     expect(lines).toContain('  language        : typescript  (tsconfig.json)');
     expect(lines).toContain('  package manager : pnpm  (pnpm-lock.yaml)');
-    expect(lines).toContain('  agent file      : .cursor/rules/old.mdc [cursor]  (.cursor/rules/old.mdc)');
+    expect(lines).toContain(
+      '  agent file      : .cursor/rules/old.mdc [cursor]  (.cursor/rules/old.mdc)',
+    );
     expect(lines).toContain('  commands:');
     expect(lines).toContain('    test  pnpm test  (package.json#scripts.test)');
     expect(lines).toContain('apps/api (@demo/api)');
-    expect(lines).toContain('  framework : nestjs 10.2.0  (apps/api/package.json#dependencies.@nestjs/core)');
+    expect(lines).toContain(
+      '  framework : nestjs 10.2.0  (apps/api/package.json#dependencies.@nestjs/core)',
+    );
   });
 
   it('--json dumps facts without the file index', async () => {
     const r = await cli(['scan', '--json']);
     const data = JSON.parse(r.stdout);
-    expect(Object.keys(data).sort()).toEqual(['description', 'facts', 'name', 'scripts', 'workspaces']);
+    expect(Object.keys(data).sort()).toEqual([
+      'description',
+      'facts',
+      'name',
+      'scripts',
+      'workspaces',
+    ]);
     expect(data.facts).toHaveLength(5);
   });
 
@@ -149,7 +170,10 @@ describe('generate', () => {
     const r = await cli(['generate']);
     expect(r.code).toBe(0);
     expect(vi.mocked(renderTargets).mock.calls[0]![1]).toEqual(['agents', 'claude']);
-    expect(vi.mocked(renderTargets).mock.calls[0]![2]).toEqual({ claudeMode: 'import', evidence: 'none' });
+    expect(vi.mocked(renderTargets).mock.calls[0]![2]).toEqual({
+      claudeMode: 'import',
+      evidence: 'none',
+    });
     expect(r.stdout).toMatch(/^ {2}create {2}AGENTS\.md$/m);
     expect(r.stdout).toContain('2 file(s) written');
     expect(existsSync(join(root, 'AGENTS.md'))).toBe(true);
@@ -234,7 +258,9 @@ describe('generate', () => {
     vi.mocked(enhanceWithAi).mockRejectedValue(new Error('connection refused'));
     const r = await cli(['generate', '--ai', '--dry-run']);
     expect(r.code).toBe(0);
-    expect(r.stderr).toContain('AI step failed, continuing without inferred rules: connection refused');
+    expect(r.stderr).toContain(
+      'AI step failed, continuing without inferred rules: connection refused',
+    );
   });
 
   it('never calls the AI step without --ai', async () => {
@@ -274,7 +300,11 @@ describe('doctor', () => {
   it('supports json and sarif formats', async () => {
     vi.mocked(runDoctor).mockReturnValue(sampleFindings);
     const json = JSON.parse((await cli(['doctor', '--format', 'json'])).stdout);
-    expect(json).toEqual({ findings: sampleFindings, summary: { errors: 1, warnings: 1, infos: 1 }, failed: true });
+    expect(json).toEqual({
+      findings: sampleFindings,
+      summary: { errors: 1, warnings: 1, infos: 1 },
+      failed: true,
+    });
     expect(JSON.parse((await cli(['doctor', '--json'])).stdout).summary.errors).toBe(1);
     const sarif = JSON.parse((await cli(['doctor', '--format', 'sarif'])).stdout);
     expect(sarif.version).toBe('2.1.0');
@@ -326,7 +356,10 @@ describe('check', () => {
       { path: 'CLAUDE.md', status: 'conflict' },
     ]);
     const sarif = JSON.parse((await cli(['check', '--format', 'sarif'])).stdout);
-    expect(sarif.runs[0].results.map((r: { ruleId: string }) => r.ruleId)).toEqual(['outdated', 'outdated']);
+    expect(sarif.runs[0].results.map((r: { ruleId: string }) => r.ruleId)).toEqual([
+      'outdated',
+      'outdated',
+    ]);
   });
 });
 

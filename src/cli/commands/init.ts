@@ -27,7 +27,10 @@ export function detectTargets(facts: ProjectFacts): TargetId[] {
     if (/(^|\/)AGENTS\.md$/.test(path)) found.add('agents');
     if (/(^|\/)CLAUDE(\.local)?\.md$/.test(path)) found.add('claude');
     if (path.startsWith('.cursor') || path === '.cursorrules') found.add('cursor');
-    if (path.startsWith('.github/copilot-instructions') || path.startsWith('.github/instructions/')) {
+    if (
+      path.startsWith('.github/copilot-instructions') ||
+      path.startsWith('.github/instructions/')
+    ) {
       found.add('copilot');
     }
     if (/(^|\/)GEMINI\.md$/.test(path)) found.add('gemini');
@@ -53,7 +56,8 @@ export function stackSummary(facts: ProjectFacts): string[] {
     const values = SUMMARY_KEYS.flatMap((key) =>
       facts.facts.filter((f) => f.scope === ws.dir && f.key === key).map((f) => String(f.value)),
     );
-    if (values.length || ws.dir === '') rows.push([`  ${scopeLabel(ws.dir)}`, values.join(' · ') || '(nothing detected)']);
+    if (values.length || ws.dir === '')
+      rows.push([`  ${scopeLabel(ws.dir)}`, values.join(' · ') || '(nothing detected)']);
   }
   return columns(rows);
 }

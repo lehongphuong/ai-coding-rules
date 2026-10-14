@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 import { getRenderer, renderTargets, RENDERERS } from '../../src/renderers/index.js';
-import { evidenceComment, groupByScope, renderRuleLine, scopeSlug } from '../../src/renderers/shared.js';
+import {
+  evidenceComment,
+  groupByScope,
+  renderRuleLine,
+  scopeSlug,
+} from '../../src/renderers/shared.js';
 import { planWrite } from '../../src/writer/index.js';
 import { TARGET_IDS } from '../../src/types.js';
 import type { RenderedFile, RenderOptions, TargetId } from '../../src/types.js';
@@ -39,7 +44,9 @@ describe('shared helpers', () => {
   it('marks inferred rules and flattens newlines', () => {
     const r = rule('ai/x', 'overview', 'line one\nline two', '', { inferred: true });
     expect(renderRuleLine(r, lean)).toBe('- line one line two _(inferred)_');
-    expect(renderRuleLine(r, withEvidence)).toBe('- line one line two _(inferred)_ <!-- from: package.json -->');
+    expect(renderRuleLine(r, withEvidence)).toBe(
+      '- line one line two _(inferred)_ <!-- from: package.json -->',
+    );
   });
 
   it('groups scopes: root first, scopes with rules only, unknown scopes appended', () => {
@@ -58,13 +65,19 @@ describe('renderers (snapshots)', () => {
   }
 
   it('agents: with evidence comments', () => {
-    expect(materialise(getRenderer('agents').render(sampleRuleSet(), withEvidence))).toMatchSnapshot();
+    expect(
+      materialise(getRenderer('agents').render(sampleRuleSet(), withEvidence)),
+    ).toMatchSnapshot();
   });
 
   it('claude: full mode matches agents layout', () => {
     const full = getRenderer('claude').render(sampleRuleSet(), { ...lean, claudeMode: 'full' });
     const agents = getRenderer('agents').render(sampleRuleSet(), lean);
-    expect(full.map((f) => f.path)).toEqual(['CLAUDE.md', 'apps/api/CLAUDE.md', 'apps/mobile/CLAUDE.md']);
+    expect(full.map((f) => f.path)).toEqual([
+      'CLAUDE.md',
+      'apps/api/CLAUDE.md',
+      'apps/mobile/CLAUDE.md',
+    ]);
     expect(full.map((f) => f.blocks)).toEqual(agents.map((f) => f.blocks));
     expect(materialise(full)).toMatchSnapshot();
   });
@@ -73,9 +86,19 @@ describe('renderers (snapshots)', () => {
 describe('agents renderer', () => {
   it('renders root and scoped files with one block per non-empty section', () => {
     const files = getRenderer('agents').render(sampleRuleSet(), lean);
-    expect(files.map((f) => f.path)).toEqual(['AGENTS.md', 'apps/api/AGENTS.md', 'apps/mobile/AGENTS.md']);
+    expect(files.map((f) => f.path)).toEqual([
+      'AGENTS.md',
+      'apps/api/AGENTS.md',
+      'apps/mobile/AGENTS.md',
+    ]);
     expect(files[0]!.header).toBe('# acme\n\nMonorepo for the Acme apps.');
-    expect(files[0]!.blocks.map((b) => b.id)).toEqual(['overview', 'commands', 'code-style', 'architecture', 'security']);
+    expect(files[0]!.blocks.map((b) => b.id)).toEqual([
+      'overview',
+      'commands',
+      'code-style',
+      'architecture',
+      'security',
+    ]);
     expect(files[0]!.blocks[1]!.content).toBe(
       '## Commands\n- Use `pnpm` for all package commands; never use npm or yarn.\n- Test: `pnpm test`',
     );
@@ -89,7 +112,10 @@ describe('agents renderer', () => {
   });
 
   it('renders a root file even without rules', () => {
-    const files = getRenderer('agents').render({ project: { name: 'x' }, rules: [], scopes: [] }, lean);
+    const files = getRenderer('agents').render(
+      { project: { name: 'x' }, rules: [], scopes: [] },
+      lean,
+    );
     expect(files).toEqual([{ path: 'AGENTS.md', target: 'agents', header: '# x', blocks: [] }]);
   });
 });
@@ -97,7 +123,11 @@ describe('agents renderer', () => {
 describe('claude renderer (import mode)', () => {
   it('imports AGENTS.md and adds notes', () => {
     const files = getRenderer('claude').render(sampleRuleSet(), lean);
-    expect(files.map((f) => f.path)).toEqual(['CLAUDE.md', 'apps/api/CLAUDE.md', 'apps/mobile/CLAUDE.md']);
+    expect(files.map((f) => f.path)).toEqual([
+      'CLAUDE.md',
+      'apps/api/CLAUDE.md',
+      'apps/mobile/CLAUDE.md',
+    ]);
     const root = files[0]!;
     expect(root.header).toBe('# acme');
     expect(root.blocks[0]).toEqual({ id: 'imports', content: '@AGENTS.md' });
@@ -134,7 +164,10 @@ describe('cursor renderer', () => {
       description: 'Project overview for acme',
       alwaysApply: true,
     });
-    expect(fm('.cursor/rules/root-security.mdc')).toEqual({ description: 'Security for acme', alwaysApply: false });
+    expect(fm('.cursor/rules/root-security.mdc')).toEqual({
+      description: 'Security for acme',
+      alwaysApply: false,
+    });
     expect(fm('.cursor/rules/apps-api-commands.mdc')).toEqual({
       description: 'Commands for @acme/api',
       globs: 'apps/api/**',
@@ -166,7 +199,11 @@ describe('copilot renderer', () => {
 
 describe('renderTargets', () => {
   it('keeps target order, de-duplicates targets and sorts files per target', () => {
-    const files = renderTargets(sampleRuleSet(), ['gemini', 'agents', 'gemini'] as TargetId[], lean);
+    const files = renderTargets(
+      sampleRuleSet(),
+      ['gemini', 'agents', 'gemini'] as TargetId[],
+      lean,
+    );
     expect(files.map((f) => `${f.target}:${f.path}`)).toEqual([
       'gemini:GEMINI.md',
       'gemini:apps/api/GEMINI.md',

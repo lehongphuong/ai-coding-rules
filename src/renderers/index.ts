@@ -5,7 +5,13 @@ import { copilotRenderer } from './copilot.js';
 import { cursorRenderer } from './cursor.js';
 import { geminiRenderer } from './gemini.js';
 
-export { scopeSlug, scopedPath, renderSectionBody, renderRuleLine, evidenceComment } from './shared.js';
+export {
+  scopeSlug,
+  scopedPath,
+  renderSectionBody,
+  renderRuleLine,
+  evidenceComment,
+} from './shared.js';
 
 export const RENDERERS: Record<TargetId, Renderer> = {
   agents: agentsRenderer,

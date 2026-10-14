@@ -6,10 +6,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('../../src/scanner/index.js', () => ({ scan: vi.fn(), scanFiles: vi.fn() }));
 vi.mock('../../src/rules/index.js', () => ({ buildRuleSet: vi.fn() }));
 vi.mock('../../src/renderers/index.js', () => ({ renderTargets: vi.fn(), getRenderer: vi.fn() }));
-vi.mock('../../src/writer/index.js', () => ({ planWrites: vi.fn(), planWrite: vi.fn(), applyPlans: vi.fn() }));
-vi.mock('../../src/doctor/index.js', () => ({ runDoctor: vi.fn(), parseInstructionFiles: vi.fn() }));
+vi.mock('../../src/writer/index.js', () => ({
+  planWrites: vi.fn(),
+  planWrite: vi.fn(),
+  applyPlans: vi.fn(),
+}));
+vi.mock('../../src/doctor/index.js', () => ({
+  runDoctor: vi.fn(),
+  parseInstructionFiles: vi.fn(),
+}));
 vi.mock('../../src/ai/index.js', () => ({ enhanceWithAi: vi.fn() }));
-vi.mock('../../src/cli/prompts.js', () => ({ prompts: { selectTargets: vi.fn(), confirm: vi.fn() } }));
+vi.mock('../../src/cli/prompts.js', () => ({
+  prompts: { selectTargets: vi.fn(), confirm: vi.fn() },
+}));
 
 import { detectTargets, defaultTargets, stackSummary } from '../../src/cli/commands/init.js';
 import { run } from '../../src/cli/index.js';
@@ -20,7 +29,14 @@ import { renderTargets } from '../../src/renderers/index.js';
 import { buildRuleSet } from '../../src/rules/index.js';
 import { scan } from '../../src/scanner/index.js';
 import { applyPlans, planWrites } from '../../src/writer/index.js';
-import { captureIO, fakeApply, fakeFacts, fakePlanner, fakeRender, fakeRuleSet } from './helpers.js';
+import {
+  captureIO,
+  fakeApply,
+  fakeFacts,
+  fakePlanner,
+  fakeRender,
+  fakeRuleSet,
+} from './helpers.js';
 
 let root: string;
 
@@ -58,7 +74,10 @@ describe('target detection', () => {
   });
 
   it('summarises the stack per scope', () => {
-    expect(stackSummary(fakeFacts(root))).toEqual(['  root      typescript · pnpm', '  apps/api  nestjs']);
+    expect(stackSummary(fakeFacts(root))).toEqual([
+      '  root      typescript · pnpm',
+      '  apps/api  nestjs',
+    ]);
   });
 });
 

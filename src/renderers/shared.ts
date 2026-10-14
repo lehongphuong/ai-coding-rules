@@ -67,7 +67,12 @@ export function groupByScope(ruleSet: RuleSet): ScopeGroup[] {
     seen.add(scope.dir);
     const rules = byDir.get(scope.dir);
     if (!rules?.length) continue;
-    groups.push({ dir: scope.dir, name: scope.name, description: scope.summary || undefined, rules });
+    groups.push({
+      dir: scope.dir,
+      name: scope.name,
+      description: scope.summary || undefined,
+      rules,
+    });
   }
   // Rules whose scope is missing from `scopes`: keep them, sorted by dir.
   for (const dir of [...byDir.keys()].filter((d) => !seen.has(d)).sort()) {
@@ -109,7 +114,11 @@ export function renderRuleLine(rule: Rule, options: RenderOptions): string {
 }
 
 /** `## Title` followed by one bullet per rule. */
-export function renderSectionBody(title: string, rules: readonly Rule[], options: RenderOptions): string {
+export function renderSectionBody(
+  title: string,
+  rules: readonly Rule[],
+  options: RenderOptions,
+): string {
   return [`## ${title}`, ...rules.map((r) => renderRuleLine(r, options))].join('\n');
 }
 

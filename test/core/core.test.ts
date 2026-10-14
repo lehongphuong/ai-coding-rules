@@ -37,12 +37,23 @@ describe('memory file index', () => {
 describe('facts helpers', () => {
   it('dedupes and scopes', () => {
     const f = dedupeFacts([
-      { key: 'language', value: 'typescript', confidence: 0.9, evidence: [{ file: 'a' }], scope: '' },
+      {
+        key: 'language',
+        value: 'typescript',
+        confidence: 0.9,
+        evidence: [{ file: 'a' }],
+        scope: '',
+      },
       { key: 'language', value: 'typescript', confidence: 1, evidence: [{ file: 'b' }], scope: '' },
     ]);
     expect(f).toHaveLength(1);
     expect(f[0]!.evidence).toHaveLength(2);
-    expect(scopeOf('apps/api/src/x.ts', [{ dir: '', name: 'r' }, { dir: 'apps/api', name: 'a' }])).toBe('apps/api');
+    expect(
+      scopeOf('apps/api/src/x.ts', [
+        { dir: '', name: 'r' },
+        { dir: 'apps/api', name: 'a' },
+      ]),
+    ).toBe('apps/api');
   });
   it('maps agent files and hashes', () => {
     expect(agentsForFile('CLAUDE.md')).toEqual(['claude']);

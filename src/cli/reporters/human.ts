@@ -5,7 +5,11 @@ import { formatLocation, plural, SEVERITY_RANK, summarize, type ReportFinding } 
 const ICONS: Record<Severity, string> = { error: '✖', warning: '⚠', info: 'ℹ' };
 
 function paint(c: Colors, severity: Severity, text: string): string {
-  return severity === 'error' ? c.red(text) : severity === 'warning' ? c.yellow(text) : c.blue(text);
+  return severity === 'error'
+    ? c.red(text)
+    : severity === 'warning'
+      ? c.yellow(text)
+      : c.blue(text);
 }
 
 /** Human doctor report: grouped by file, token budget lines last, then a summary. */
@@ -22,7 +26,8 @@ export function renderHuman(findings: readonly ReportFinding[], c: Colors): stri
   const idWidth = Math.max(0, ...rest.map((f) => f.checkId.length));
   for (const [file, list] of groups) {
     list.sort(
-      (a, b) => (a.line ?? 0) - (b.line ?? 0) || SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity],
+      (a, b) =>
+        (a.line ?? 0) - (b.line ?? 0) || SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity],
     );
     const locWidth = Math.max(...list.map((f) => formatLocation(f).length));
     out.push(c.underline(c.bold(file)));

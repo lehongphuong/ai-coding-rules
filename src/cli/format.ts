@@ -28,7 +28,9 @@ export function columns(rows: readonly string[][], gap = '  '): string[] {
   }
   return rows.map((row) =>
     row
-      .map((cell, i) => (i === row.length - 1 ? cell : cell + ' '.repeat(widths[i]! - visibleLength(cell))))
+      .map((cell, i) =>
+        i === row.length - 1 ? cell : cell + ' '.repeat(widths[i]! - visibleLength(cell)),
+      )
       .join(gap),
   );
 }

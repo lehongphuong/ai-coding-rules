@@ -27,7 +27,10 @@ export function report(
 ): void {
   if (format === 'json') ctx.print(renderJson(findings, extra));
   else if (format === 'sarif') ctx.print(renderSarif(findings, packageVersion()));
-  else ctx.print(renderHuman(ctx.quiet ? findings.filter((f) => f.severity !== 'info') : findings, ctx.c));
+  else
+    ctx.print(
+      renderHuman(ctx.quiet ? findings.filter((f) => f.severity !== 'info') : findings, ctx.c),
+    );
 }
 
 export function runDoctorCommand(ctx: Ctx, opts: DoctorOptions): number {
@@ -40,13 +43,17 @@ export function runDoctorCommand(ctx: Ctx, opts: DoctorOptions): number {
 }
 
 export function formatOption(): Option {
-  return new Option('-f, --format <format>', 'output format').choices(['human', 'json', 'sarif']).default('human');
+  return new Option('-f, --format <format>', 'output format')
+    .choices(['human', 'json', 'sarif'])
+    .default('human');
 }
 
 export function registerDoctor(program: Command, bind: Bind): void {
   program
     .command('doctor')
-    .description('lint existing instruction files for conflicts, stale references, duplicates and size')
+    .description(
+      'lint existing instruction files for conflicts, stale references, duplicates and size',
+    )
     .addOption(formatOption())
     .option('--strict', 'fail on warnings too')
     .action(bind(runDoctorCommand));

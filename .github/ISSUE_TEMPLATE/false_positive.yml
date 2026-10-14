@@ -1,5 +1,5 @@
 name: Doctor false positive
-description: "`ai-rules doctor` or `check` reported a finding that is wrong."
+description: '`ai-rules doctor` or `check` reported a finding that is wrong.'
 labels: [doctor, false-positive]
 body:
   - type: dropdown

@@ -5,7 +5,14 @@ import { registerExplain } from './commands/explain.js';
 import { registerGenerate } from './commands/generate.js';
 import { registerInit } from './commands/init.js';
 import { registerScan } from './commands/scan.js';
-import { CliError, createCtx, packageVersion, type Bind, type CliIO, type GlobalOptions } from './context.js';
+import {
+  CliError,
+  createCtx,
+  packageVersion,
+  type Bind,
+  type CliIO,
+  type GlobalOptions,
+} from './context.js';
 
 export { CliError, type CliIO } from './context.js';
 
@@ -53,13 +60,15 @@ export function createProgram(io: CliIO, bind: Bind): Command {
 export async function run(argv: string[], ioOverrides: Partial<CliIO> = {}): Promise<number> {
   const io: CliIO = { ...defaultIO(), ...ioOverrides };
   let exitCode = 0;
-  const bind: Bind = (handler) => async (...args) => {
-    // commander passes (...positional, options, command)
-    const cmd = args[args.length - 1] as Command;
-    const positional = args.slice(0, -2).flat().map(String);
-    const ctx = createCtx(cmd.optsWithGlobals<GlobalOptions>(), io);
-    exitCode = await handler(ctx, cmd.opts() as Parameters<typeof handler>[1], positional);
-  };
+  const bind: Bind =
+    (handler) =>
+    async (...args) => {
+      // commander passes (...positional, options, command)
+      const cmd = args[args.length - 1] as Command;
+      const positional = args.slice(0, -2).flat().map(String);
+      const ctx = createCtx(cmd.optsWithGlobals<GlobalOptions>(), io);
+      exitCode = await handler(ctx, cmd.opts() as Parameters<typeof handler>[1], positional);
+    };
 
   try {
     await createProgram(io, bind).parseAsync(argv, { from: 'user' });

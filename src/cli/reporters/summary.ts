@@ -37,5 +37,7 @@ export function plural(n: number, word: string): string {
 /** `file:line` or `file:line-end`, or just `file`. */
 export function formatLocation(f: { file: string; line?: number; endLine?: number }): string {
   if (!f.line) return f.file;
-  return f.endLine && f.endLine !== f.line ? `${f.file}:${f.line}-${f.endLine}` : `${f.file}:${f.line}`;
+  return f.endLine && f.endLine !== f.line
+    ? `${f.file}:${f.line}-${f.endLine}`
+    : `${f.file}:${f.line}`;
 }

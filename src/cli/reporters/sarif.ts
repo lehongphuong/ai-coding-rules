@@ -5,7 +5,8 @@ export const SARIF_SCHEMA = 'https://json.schemastore.org/sarif-2.1.0.json';
 export const INFORMATION_URI = 'https://www.npmjs.com/package/ai-coding-rules';
 
 const RULE_DESCRIPTIONS: Record<string, string> = {
-  'conflict/repo': 'Instruction contradicts the repository (e.g. wrong package manager or test runner).',
+  'conflict/repo':
+    'Instruction contradicts the repository (e.g. wrong package manager or test runner).',
   'conflict/files': 'Two instruction files for the same scope contradict each other.',
   'stale/command': 'Instruction references a script that does not exist.',
   'stale/path': 'Instruction references a path that does not exist.',

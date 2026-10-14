@@ -34,8 +34,18 @@ const findings: Finding[] = [
     file: 'AGENTS.md',
     line: 41,
   },
-  { checkId: 'legacy', severity: 'info', message: 'Migrate to .cursor/rules/*.mdc', file: '.cursorrules' },
-  { checkId: 'budget', severity: 'info', message: 'Claude Code ≈ 3.5k tokens (CLAUDE.md, AGENTS.md)', file: 'CLAUDE.md' },
+  {
+    checkId: 'legacy',
+    severity: 'info',
+    message: 'Migrate to .cursor/rules/*.mdc',
+    file: '.cursorrules',
+  },
+  {
+    checkId: 'budget',
+    severity: 'info',
+    message: 'Claude Code ≈ 3.5k tokens (CLAUDE.md, AGENTS.md)',
+    file: 'CLAUDE.md',
+  },
 ];
 
 describe('summary helpers', () => {
@@ -76,9 +86,12 @@ describe('human reporter', () => {
 
   it('prints a clean result when nothing is wrong', () => {
     expect(renderHuman([], c)).toBe('✔ No problems found');
-    expect(renderHuman([findings[2]!].map((f) => ({ ...f, severity: 'warning' as const })), c)).toMatch(
-      /⚠ 0 errors, 1 warning$/,
-    );
+    expect(
+      renderHuman(
+        [findings[2]!].map((f) => ({ ...f, severity: 'warning' as const })),
+        c,
+      ),
+    ).toMatch(/⚠ 0 errors, 1 warning$/);
   });
 
   it('adds ANSI colours only when enabled', () => {
@@ -89,15 +102,29 @@ describe('human reporter', () => {
 
 describe('json reporter', () => {
   it('returns findings and summary', () => {
-    expect(jsonReport(findings)).toEqual({ findings, summary: { errors: 1, warnings: 2, infos: 2 } });
-    expect(JSON.parse(renderJson(findings, { failed: true }))).toMatchObject({ failed: true, summary: { errors: 1 } });
+    expect(jsonReport(findings)).toEqual({
+      findings,
+      summary: { errors: 1, warnings: 2, infos: 2 },
+    });
+    expect(JSON.parse(renderJson(findings, { failed: true }))).toMatchObject({
+      failed: true,
+      summary: { errors: 1 },
+    });
   });
 });
 
 describe('sarif reporter', () => {
   it('produces a SARIF 2.1.0 log', () => {
-    const extra: ReportFinding = { checkId: 'outdated', severity: 'error', message: 'AGENTS.md is out of date', file: 'AGENTS.md' };
-    const log = sarifReport([...findings, extra, { checkId: 'budget', severity: 'warning', message: 'over', file: '' }], '1.2.3');
+    const extra: ReportFinding = {
+      checkId: 'outdated',
+      severity: 'error',
+      message: 'AGENTS.md is out of date',
+      file: 'AGENTS.md',
+    };
+    const log = sarifReport(
+      [...findings, extra, { checkId: 'budget', severity: 'warning', message: 'over', file: '' }],
+      '1.2.3',
+    );
     expect(log.$schema).toMatch(/sarif-2\.1\.0/);
     expect(log.version).toBe('2.1.0');
     expect(log.runs).toHaveLength(1);
@@ -112,19 +139,35 @@ describe('sarif reporter', () => {
       'outdated',
       'stale/command',
     ]);
-    expect(run.tool.driver.rules.find((r) => r.id === 'budget')?.defaultConfiguration.level).toBe('warning');
-    expect(run.results.map((r) => r.level)).toEqual(['error', 'warning', 'warning', 'note', 'note', 'error', 'warning']);
+    expect(run.tool.driver.rules.find((r) => r.id === 'budget')?.defaultConfiguration.level).toBe(
+      'warning',
+    );
+    expect(run.results.map((r) => r.level)).toEqual([
+      'error',
+      'warning',
+      'warning',
+      'note',
+      'note',
+      'error',
+      'warning',
+    ]);
     for (const r of run.results) {
       expect(run.tool.driver.rules[r.ruleIndex]!.id).toBe(r.ruleId);
       expect(r.message.text.length).toBeGreaterThan(0);
-      for (const loc of r.locations) expect(loc.physicalLocation.region.startLine).toBeGreaterThanOrEqual(1);
+      for (const loc of r.locations)
+        expect(loc.physicalLocation.region.startLine).toBeGreaterThanOrEqual(1);
     }
     expect(run.results[0]).toMatchObject({
       ruleId: 'conflict/repo',
       message: { text: expect.stringContaining('Use `pnpm test`') },
-      locations: [{ physicalLocation: { artifactLocation: { uri: 'CLAUDE.md' }, region: { startLine: 12 } } }],
+      locations: [
+        { physicalLocation: { artifactLocation: { uri: 'CLAUDE.md' }, region: { startLine: 12 } } },
+      ],
     });
-    expect(run.results[1]!.locations[0]!.physicalLocation.region).toEqual({ startLine: 20, endLine: 38 });
+    expect(run.results[1]!.locations[0]!.physicalLocation.region).toEqual({
+      startLine: 20,
+      endLine: 38,
+    });
     expect(run.results[1]!.relatedLocations?.[0]).toMatchObject({ id: 1 });
     expect(run.results[3]!.locations[0]!.physicalLocation.region.startLine).toBe(1);
     expect(run.results[6]!.locations).toEqual([]);

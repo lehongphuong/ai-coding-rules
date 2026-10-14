@@ -138,7 +138,9 @@ class MemoryFileIndex extends BaseFileIndex {
 
 /** Walk `root` once, honouring .gitignore and DEFAULT_IGNORES. */
 export function createFsFileIndex(root: string, options: FsFileIndexOptions = {}): FileIndex {
-  const ig = ignore().add(DEFAULT_IGNORES).add(options.ignore ?? []);
+  const ig = ignore()
+    .add(DEFAULT_IGNORES)
+    .add(options.ignore ?? []);
   try {
     ig.add(readFileSync(join(root, '.gitignore'), 'utf8'));
   } catch {

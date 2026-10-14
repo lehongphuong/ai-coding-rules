@@ -36,7 +36,9 @@ export function runExplain(ctx: Ctx, _opts: unknown, args: string[]): number {
     ctx.print(rules.map((r) => renderRule(r, ctx)).join('\n\n'));
   }
   if (rules.length === 0) {
-    ctx.io.stderr(`No rule matches "${query}". Try a rule id (e.g. "common/commands") or a word from its text.\n`);
+    ctx.io.stderr(
+      `No rule matches "${query}". Try a rule id (e.g. "common/commands") or a word from its text.\n`,
+    );
     return 1;
   }
   return 0;
