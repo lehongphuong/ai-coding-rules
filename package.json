@@ -1,0 +1,50 @@
+{
+  "name": "ai-coding-rules",
+  "version": "0.1.0",
+  "description": "Generate evidence-backed instruction files for AI coding agents (AGENTS.md, CLAUDE.md, Cursor, Copilot, Gemini) and lint them for conflicts, duplicates and stale references. Local-first, no API key required.",
+  "keywords": ["ai", "agents", "agents-md", "claude", "cursor", "copilot", "codex", "gemini", "rules", "cli", "lint"],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "ai-coding-rules": "bin/ai-rules.js",
+    "ai-rules": "bin/ai-rules.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }
+  },
+  "files": ["bin", "dist", "README.md", "LICENSE"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli/main.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ai-rules": "node bin/ai-rules.js"
+  },
+  "dependencies": {
+    "@clack/prompts": "0.11.0",
+    "commander": "14.0.3",
+    "diff": "8.0.4",
+    "ignore": "7.0.5",
+    "picocolors": "1.1.1",
+    "yaml": "2.8.1",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "@types/node": "22.19.1",
+    "eslint": "9.39.1",
+    "prettier": "3.6.2",
+    "tsup": "8.5.1",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.48.0",
+    "vitest": "3.2.4"
+  }
+}
