@@ -1,0 +1,49 @@
+# ai-coding-rules configuration. Docs: npx ai-coding-rules --help
+
+# Files to generate: agents, claude, cursor, copilot, gemini
+targets: [agents, claude]
+
+# CLAUDE.md style: import (@AGENTS.md + Claude notes) | full
+claude:
+  mode: import
+
+# Evidence comments after each rule: none | comment
+output:
+  evidence: none
+
+# Extra gitignore-style patterns skipped by the scanner
+ignore: ["test/fixtures/**"]
+
+# disable: rule ids or pack prefixes ("common/no-secrets", "nestjs/*")
+# custom: team rules { id, section, text, scope? }
+rules:
+  disable: []
+  custom:
+    - id: repo/architecture
+      section: architecture
+      text: "Module boundaries are defined by `src/types.ts`; read SPEC.md before changing scanner, rules, renderers, writer or doctor."
+    - id: repo/evidence
+      section: dos-donts
+      text: "Every generated rule must carry evidence; never add rules or commands that the repo cannot prove."
+    - id: repo/offline
+      section: dos-donts
+      text: "Keep core code offline and deterministic; network calls belong only in `src/ai/` behind `--ai`."
+    - id: repo/dogfood
+      section: testing
+      text: "After changing rules or renderers, run `npm run build && node bin/ai-rules.js generate` and commit the regenerated files."
+
+# failOn: error | warning; checks: conflict/repo, conflict/files, stale/command,
+# stale/path, duplicate, budget, legacy, empty
+doctor:
+  disable: []
+  failOn: error
+  duplicateThreshold: 0.8
+  budget:
+    perFile: 2000
+    perAgent: 6000
+
+# Optional LLM step (generate --ai), never used unless requested:
+# ai:
+#   provider: ollama        # ollama | anthropic | openai
+#   model: llama3.1
+#   baseUrl: http://localhost:11434

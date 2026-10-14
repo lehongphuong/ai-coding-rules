@@ -3,7 +3,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { shortHash } from '../../src/core/hash.js';
-import { applyPlans, parseBlocks, planWrite, planWrites, renderBlock } from '../../src/writer/index.js';
+import {
+  applyPlans,
+  parseBlocks,
+  planWrite,
+  planWrites,
+  renderBlock,
+} from '../../src/writer/index.js';
 import type { RenderedFile } from '../../src/types.js';
 
 const file = (blocks: [string, string][], extra: Partial<RenderedFile> = {}): RenderedFile => ({
@@ -67,7 +73,10 @@ describe('planWrite', () => {
   });
 
   it('creates with front matter', () => {
-    const plan = planWrite(file([['a', 'A']], { header: undefined, frontMatter: 'applyTo: "x/**"\n' }), undefined);
+    const plan = planWrite(
+      file([['a', 'A']], { header: undefined, frontMatter: 'applyTo: "x/**"\n' }),
+      undefined,
+    );
     expect(plan.content).toBe(`---\napplyTo: "x/**"\n---\n\n${block('a', 'A')}\n`);
   });
 
@@ -215,5 +224,44 @@ describe('planWrites / applyPlans', () => {
 
     expect(applyPlans(root, planWrites(root, files, { force: true }))).toEqual(['AGENTS.md']);
     expect(readFileSync(path, 'utf8')).not.toContain('- mine');
+  });
+});
+
+describe('new block placement', () => {
+  it('inserts a new block next to its neighbour in render order', () => {
+    const v1 = file([
+      ['overview', '## Project overview\n- A.'],
+      ['testing', '## Testing\n- t'],
+      ['security', '## Security\n- s'],
+    ]);
+    const existing = planWrite(v1, undefined).content + '\nUser notes.\n';
+    const v2 = file([
+      ['overview', '## Project overview\n- A.'],
+      ['commands', '## Commands\n- c'],
+      ['testing', '## Testing\n- t'],
+      ['architecture', '## Architecture\n- a'],
+      ['security', '## Security\n- s'],
+    ]);
+    const out = planWrite(v2, existing).content;
+    const order = ['overview', 'commands', 'testing', 'architecture', 'security'].map((id) =>
+      out.indexOf(`begin id=${id} `),
+    );
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    expect(out.endsWith('User notes.\n')).toBe(true);
+    expect(planWrite(v2, out).status).toBe('unchanged');
+    expect(out).not.toMatch(/\n\n\n/);
+  });
+
+  it('puts new leading blocks before the first existing one', () => {
+    const existing = planWrite(file([['testing', '## Testing\n- t']]), undefined).content;
+    const out = planWrite(
+      file([
+        ['overview', '## O\n- o'],
+        ['testing', '## Testing\n- t'],
+      ]),
+      existing,
+    ).content;
+    expect(out.indexOf('id=overview')).toBeLessThan(out.indexOf('id=testing'));
+    expect(out).not.toMatch(/\n\n\n/);
   });
 });

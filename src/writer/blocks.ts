@@ -60,7 +60,10 @@ export function parseBlocks(text: string): ParsedFile {
     const close = lines.findIndex((l, idx) => idx > 0 && l.text === '---');
     if (close > 0) {
       result.frontMatter = {
-        raw: lines.slice(1, close).map((l) => l.text).join('\n'),
+        raw: lines
+          .slice(1, close)
+          .map((l) => l.text)
+          .join('\n'),
         endOffset: lines[close]!.end,
       };
       i = close + 1;
@@ -86,7 +89,10 @@ export function parseBlocks(text: string): ParsedFile {
     result.blocks.push({
       id,
       hash: begin[2],
-      body: lines.slice(i + 1, endIdx).map((l) => l.text).join('\n'),
+      body: lines
+        .slice(i + 1, endIdx)
+        .map((l) => l.text)
+        .join('\n'),
       startLine: i + 1,
       endLine: endIdx + 1,
       startOffset: lines[i]!.start,
@@ -105,7 +111,9 @@ function blockBody(block: ManagedBlock): string {
 /** Begin marker (with hash), body and end marker; no trailing newline. */
 export function renderBlock(block: ManagedBlock, eol = '\n'): string {
   const body = blockBody(block);
-  return [beginMarker(block.id, shortHash(body)), body, endMarker(block.id)].join('\n').replace(/\n/g, eol);
+  return [beginMarker(block.id, shortHash(body)), body, endMarker(block.id)]
+    .join('\n')
+    .replace(/\n/g, eol);
 }
 
 /** True when a parsed block was edited by hand (body no longer matches its hash). */

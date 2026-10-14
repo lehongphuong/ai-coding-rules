@@ -24,6 +24,7 @@ export const DEFAULT_IGNORES = [
   'Pods',
   '.turbo',
   '.cache',
+  '.claude/worktrees',
 ];
 
 export const MAX_PATHS = 50_000;

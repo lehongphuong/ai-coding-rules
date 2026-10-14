@@ -23,7 +23,8 @@ function renderNew(file: RenderedFile): string {
   parts.push(...file.blocks.map((b) => renderBlock(b)));
   let out = parts.join('\n\n');
   if (out) out += '\n';
-  if (file.frontMatter !== undefined) out = frontMatterText(file.frontMatter, '\n') + (out ? `\n${out}` : '');
+  if (file.frontMatter !== undefined)
+    out = frontMatterText(file.frontMatter, '\n') + (out ? `\n${out}` : '');
   return out;
 }
 
@@ -50,7 +51,23 @@ function merge(file: RenderedFile, existing: string): { content: string; conflic
   }
 
   const placed = new Set<string>();
-  const missing = () => file.blocks.filter((b) => !placed.has(b.id) && !parsed.blocks.some((p) => p.id === b.id));
+  // Anchor each new block next to its neighbour in render order, so sections stay ordered.
+  const present = new Set(parsed.blocks.map((b) => b.id).filter((id) => wanted.has(id)));
+  const after = new Map<string, ManagedBlock[]>();
+  const before = new Map<string, ManagedBlock[]>();
+  file.blocks.forEach((block, i) => {
+    if (present.has(block.id)) return;
+    const prev = file.blocks
+      .slice(0, i)
+      .reverse()
+      .find((b) => present.has(b.id));
+    const next = file.blocks.slice(i + 1).find((b) => present.has(b.id));
+    if (prev) after.set(prev.id, [...(after.get(prev.id) ?? []), block]);
+    else if (next) before.set(next.id, [...(before.get(next.id) ?? []), block]);
+  });
+
+  const missing = () =>
+    file.blocks.filter((b) => !placed.has(b.id) && !parsed.blocks.some((p) => p.id === b.id));
   const insertMissing = () => {
     for (const block of missing()) {
       out = withBlankLine(out, eol) + renderBlock(block, eol) + eol;
@@ -63,9 +80,18 @@ function merge(file: RenderedFile, existing: string): { content: string; conflic
     pos = block.endOffset;
     const next = wanted.get(block.id);
     if (next && !placed.has(block.id)) {
+      for (const b of before.get(block.id) ?? []) {
+        out += renderBlock(b, eol) + eol + eol;
+        placed.add(b.id);
+      }
       const hadNewline = existing.slice(block.startOffset, block.endOffset).endsWith('\n');
       out += renderBlock(next, eol) + (hadNewline ? eol : '');
       placed.add(block.id);
+      for (const b of after.get(block.id) ?? []) {
+        if (!out.endsWith('\n')) out += eol;
+        out += eol + renderBlock(b, eol) + (hadNewline ? eol : '');
+        placed.add(b.id);
+      }
     } else {
       // Removed (or duplicate) block: drop it together with one following blank line.
       const blank = /^\r?\n/.exec(existing.slice(pos));
@@ -92,10 +118,17 @@ export function planWrite(
   const base = { path: file.path, target: file.target };
   if (existing === undefined) {
     const content = renderNew(file);
-    return { ...base, status: 'create', content, diff: createTwoFilesPatch(file.path, file.path, '', content), conflicts: [] };
+    return {
+      ...base,
+      status: 'create',
+      content,
+      diff: createTwoFilesPatch(file.path, file.path, '', content),
+      conflicts: [],
+    };
   }
   const { content, conflicts } = merge(file, existing);
-  if (content === existing) return { ...base, status: 'unchanged', content, diff: '', conflicts: [] };
+  if (content === existing)
+    return { ...base, status: 'unchanged', content, diff: '', conflicts: [] };
   const status = conflicts.length > 0 && !options.force ? 'conflict' : 'update';
   return {
     ...base,
@@ -116,12 +149,20 @@ function readExisting(path: string): string | undefined {
 }
 
 /** planWrite for each file, reading existing content from `root`. */
-export function planWrites(root: string, files: readonly RenderedFile[], options: PlanOptions = {}): WritePlan[] {
+export function planWrites(
+  root: string,
+  files: readonly RenderedFile[],
+  options: PlanOptions = {},
+): WritePlan[] {
   return files.map((file) => planWrite(file, readExisting(join(root, file.path)), options));
 }
 
 /** Write create/update plans to disk (never conflicts). Returns written (or would-be-written) paths. */
-export function applyPlans(root: string, plans: readonly WritePlan[], options: { dryRun?: boolean } = {}): string[] {
+export function applyPlans(
+  root: string,
+  plans: readonly WritePlan[],
+  options: { dryRun?: boolean } = {},
+): string[] {
   const written: string[] = [];
   for (const plan of plans) {
     if (plan.status !== 'create' && plan.status !== 'update') continue;
