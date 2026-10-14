@@ -1,0 +1,49 @@
+name: Bug report
+description: Something crashed or behaved incorrectly.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! For wrong `doctor` findings, please use the **False positive** template instead.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `npx ai-coding-rules --version`.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node.js version (or standalone binary), package manager.
+      placeholder: macOS 15, Node 22.11, pnpm 9
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      placeholder: ai-rules generate --target agents,cursor
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the full output. Re-run with `DEBUG=ai-rules` for a stack trace.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A public repo, or the relevant files (package.json, lockfile names, instruction files, .ai-rules/config.yaml).

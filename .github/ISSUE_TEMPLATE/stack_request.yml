@@ -1,0 +1,36 @@
+name: New stack / detector request
+description: Ask for support for a language, framework or tool we don't detect yet.
+labels: [detector, enhancement]
+body:
+  - type: input
+    id: stack
+    attributes:
+      label: Stack or tool
+      placeholder: e.g. Remix, Rails, SvelteKit, Bazel
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: How can it be detected?
+      description: Files and fields that prove the stack is used (manifest dependency, lockfile, config file).
+      placeholder: |
+        - `Gemfile` contains `rails`
+        - `bin/rails` exists
+    validations:
+      required: true
+  - type: textarea
+    id: rules
+    attributes:
+      label: Rules agents should follow
+      description: Concise, evidence-backed conventions and the canonical commands (test, lint, format, build).
+  - type: input
+    id: example
+    attributes:
+      label: Example public repository
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd like to implement this detector (see docs/writing-detectors.md).
