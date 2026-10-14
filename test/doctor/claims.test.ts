@@ -124,3 +124,22 @@ describe('extractClaims: commands and paths', () => {
     expect(claims(text, '.cursor/rules/a.mdc')).toEqual([]);
   });
 });
+
+describe('negated lists', () => {
+  const pm = (text: string) =>
+    claims(text)
+      .filter((c) => c.key === 'packageManager')
+      .map((c) => `${c.value}:${c.negated}`)
+      .sort();
+
+  it('negates every item of "do not use a, b or c"', () => {
+    expect(pm('Use `pnpm` for all dependency commands; do not use npm, yarn or bun.')).toEqual([
+      'npm:true',
+      'yarn:true',
+    ]);
+  });
+
+  it('does not spread negation past a new clause', () => {
+    expect(pm('Do not use npm, use pnpm instead.')).toEqual(['npm:true', 'pnpm:false']);
+  });
+});

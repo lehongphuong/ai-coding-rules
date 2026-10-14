@@ -232,13 +232,37 @@ function extractStyle(ctx: LineCtx, push: Push): void {
   }
 }
 
+/** Text between a list comma and an item: an optional earlier item and a conjunction. */
+const LIST_ITEM_BEFORE = /^\s*(?:`?[\w@./:-]+`?\s+)?(?:(?:or|and|nor)\s+)?$/i;
+/** After an item: more items and then a conjunction ("…, yarn or bun"). */
+const LIST_TAIL_AFTER = /^`?\s*(?:,\s*`?[\w@./:-]+`?\s*)*,?\s*(?:or|and|nor)\b/i;
+
+/** True if the term at `index` sits in an "a, b or c" style list. */
+function inList(line: string, segStart: number, index: number, length: number): boolean {
+  if (!/,\s*$/.test(line.slice(0, segStart))) return false;
+  const before = line.slice(segStart, index);
+  if (/\b(?:or|and|nor)\s+$/i.test(before)) return true;
+  return LIST_TAIL_AFTER.test(line.slice(index + length));
+}
+
 /** True if the term at `index` is negated within its clause. */
 export function isNegated(line: string, index: number, length: number): boolean {
-  let start = 0;
+  const starts = [0];
   for (const m of line.matchAll(CLAUSE_BREAK)) {
-    if (m.index! + m[0].length <= index) start = m.index! + m[0].length;
+    if (m.index! + m[0].length <= index) starts.push(m.index! + m[0].length);
   }
-  if (NEGATION_BEFORE.test(line.slice(start, index))) return true;
+  let i = starts.length - 1;
+  // "don't use npm, yarn or bun": list items after a comma share the negation of the list head
+  if (inList(line, starts[i]!, index, length)) {
+    while (
+      i > 0 &&
+      line[starts[i]! - 1] === ',' &&
+      LIST_ITEM_BEFORE.test(line.slice(starts[i]!, index))
+    )
+      i--;
+    if (i < starts.length - 1) i = Math.max(0, i);
+  }
+  if (NEGATION_BEFORE.test(line.slice(starts[i]!, index))) return true;
   let after = line.slice(index + length);
   const brk = after.search(/[.;!?](?=\s|$)|[,:|—–]|\s-\s/);
   if (brk !== -1) after = after.slice(0, brk + 1);

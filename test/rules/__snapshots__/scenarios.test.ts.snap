@@ -49,7 +49,7 @@ exports[`snapshots > monorepo 1`] = `
   "[apps/mobile] architecture flutter/riverpod-generator: Declare providers with \`@riverpod\` annotations (riverpod_generator) instead of hand-written providers.",
   "[apps/mobile] testing common/test-runner: Write tests with flutter_test; do not introduce another test framework.",
   "[apps/mobile] testing common/test-before-finish: Run \`flutter test\` and make sure it passes before finishing a task.",
-  "[apps/mobile] testing flutter/widget-tests: Write widget tests with \`testWidgets\` and \`WidgetTester\` in \`test/\`, mirroring the \`lib/\` structure.",
+  "[apps/mobile] testing flutter/widget-tests: Write widget tests with \`testWidgets\` and \`WidgetTester\`, mirroring the \`lib/\` structure.",
   "[apps/mobile] dos-donts flutter/codegen: Run \`dart run build_runner build --delete-conflicting-outputs\` after changing annotated files.",
   "[apps/mobile] dos-donts flutter/generated-files: Do not edit generated \`*.g.dart\` / \`*.freezed.dart\` files; change the source and regenerate.",
   "[apps/mobile] dos-donts dart/pub: Add packages with \`flutter pub add\`; do not edit \`pubspec.lock\` by hand.",

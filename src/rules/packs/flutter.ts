@@ -72,7 +72,11 @@ export const flutterPack: RulePack = {
       id: 'flutter/widget-tests',
       section: 'testing',
       priority: 40,
-      text: 'Write widget tests with `testWidgets` and `WidgetTester` in `test/`, mirroring the `lib/` structure.',
+      // only name `test/` when it exists, so the doctor's stale/path check stays quiet
+      text: (q) =>
+        q.files.hasDir(q.path('test'))
+          ? 'Write widget tests with `testWidgets` and `WidgetTester` in `test/`, mirroring the `lib/` structure.'
+          : 'Write widget tests with `testWidgets` and `WidgetTester`, mirroring the `lib/` structure.',
       evidence: allOf(ev(['testRunner', 'flutter-test']), flutter),
     },
   ],
