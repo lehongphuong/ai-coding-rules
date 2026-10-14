@@ -5,6 +5,6 @@ export { buildRuleSet } from './rules/index.js';
 export { getRenderer, renderTargets } from './renderers/index.js';
 export { planWrite, planWrites, applyPlans } from './writer/index.js';
 export { parseInstructionFiles, runDoctor } from './doctor/index.js';
-export { loadConfig } from './config/index.js';
-export { enhanceWithAi } from './ai/index.js';
+export { ConfigError, loadConfig, renderConfigYaml, writeConfig } from './config/index.js';
+export { AiError, enhanceWithAi } from './ai/index.js';
 export { run } from './cli/index.js';

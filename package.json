@@ -2,7 +2,19 @@
   "name": "ai-coding-rules",
   "version": "0.1.0",
   "description": "Generate evidence-backed instruction files for AI coding agents (AGENTS.md, CLAUDE.md, Cursor, Copilot, Gemini) and lint them for conflicts, duplicates and stale references. Local-first, no API key required.",
-  "keywords": ["ai", "agents", "agents-md", "claude", "cursor", "copilot", "codex", "gemini", "rules", "cli", "lint"],
+  "keywords": [
+    "ai",
+    "agents",
+    "agents-md",
+    "claude",
+    "cursor",
+    "copilot",
+    "codex",
+    "gemini",
+    "rules",
+    "cli",
+    "lint"
+  ],
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -12,10 +24,20 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
-  "files": ["bin", "dist", "README.md", "LICENSE"],
-  "engines": { "node": ">=20" },
+  "files": [
+    "bin",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/cli/main.ts",
@@ -25,7 +47,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "ai-rules": "node bin/ai-rules.js"
+    "ai-rules": "node bin/ai-rules.js",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@clack/prompts": "0.11.0",

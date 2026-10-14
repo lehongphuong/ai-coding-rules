@@ -74,6 +74,14 @@ export function parseTargets(value: string | undefined): TargetId[] | undefined 
   return [...new Set(ids)] as TargetId[];
 }
 
+/** CLAUDE.md in import mode is `@AGENTS.md`, so the agents target must be rendered too. */
+export function withImportedTargets(targets: TargetId[], config: ResolvedConfig): TargetId[] {
+  if (targets.includes('claude') && config.claude.mode === 'import' && !targets.includes('agents')) {
+    return ['agents', ...targets];
+  }
+  return targets;
+}
+
 /** rule set → (optional AI rules) → rendered files → write plans. Never writes. */
 export async function planGeneration(
   project: Project,
@@ -83,13 +91,13 @@ export async function planGeneration(
   const ruleSet = options.ruleSet ?? buildRules(project);
   if (options.ai && !options.ruleSet) {
     try {
-      const extra = await enhanceWithAi(facts, config, { env: options.env });
+      const extra = await enhanceWithAi(facts, config, { env: options.env, warn: options.warn });
       ruleSet.rules = [...ruleSet.rules, ...extra];
     } catch (err) {
       options.warn?.(`AI step failed, continuing without inferred rules: ${(err as Error).message}`);
     }
   }
-  const targets = options.targets ?? config.targets;
+  const targets = withImportedTargets(options.targets ?? config.targets, config);
   const files = renderTargets(ruleSet, targets, {
     claudeMode: config.claude.mode,
     evidence: options.withEvidence ? 'comment' : config.output.evidence,
