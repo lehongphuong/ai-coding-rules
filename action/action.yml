@@ -1,0 +1,80 @@
+name: ai-coding-rules check
+description: Fail the build when AI agent instruction files (AGENTS.md, CLAUDE.md, Cursor, Copilot, Gemini) are out of date, contradictory or stale.
+author: ai-coding-rules contributors
+branding:
+  icon: check-square
+  color: purple
+
+inputs:
+  version:
+    description: Version of the ai-coding-rules npm package to run (e.g. "0.1.0" or "latest").
+    required: false
+    default: latest
+  args:
+    description: Extra arguments passed to `ai-rules check` (e.g. "--strict").
+    required: false
+    default: ''
+  sarif:
+    description: When "true", write SARIF to ai-rules.sarif and upload it to GitHub code scanning.
+    required: false
+    default: 'false'
+  working-directory:
+    description: Directory to run the check in.
+    required: false
+    default: '.'
+
+outputs:
+  exit-code:
+    description: Exit code of `ai-rules check` (0 ok, 1 findings or out-of-date files, 2 tool error).
+    value: ${{ steps.check.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Run ai-rules check
+      id: check
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        AI_RULES_VERSION: ${{ inputs.version }}
+        AI_RULES_ARGS: ${{ inputs.args }}
+        AI_RULES_SARIF: ${{ inputs.sarif }}
+      run: |
+        set +e
+        if [ "$AI_RULES_SARIF" = "true" ]; then
+          # shellcheck disable=SC2086
+          npx --yes "ai-coding-rules@${AI_RULES_VERSION}" check $AI_RULES_ARGS --format sarif > ai-rules.sarif
+          code=$?
+          # Re-run in human format so the log shows readable findings.
+          # shellcheck disable=SC2086
+          npx --yes "ai-coding-rules@${AI_RULES_VERSION}" check $AI_RULES_ARGS || true
+        else
+          # shellcheck disable=SC2086
+          npx --yes "ai-coding-rules@${AI_RULES_VERSION}" check $AI_RULES_ARGS
+          code=$?
+        fi
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        exit 0
+
+    - name: Upload SARIF
+      if: always() && inputs.sarif == 'true'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.working-directory }}/ai-rules.sarif
+        category: ai-coding-rules
+
+    - name: Fail on findings
+      if: always()
+      shell: bash
+      env:
+        EXIT_CODE: ${{ steps.check.outputs.exit-code }}
+      run: |
+        if [ "${EXIT_CODE:-2}" != "0" ]; then
+          echo "::error::ai-rules check failed (exit code ${EXIT_CODE:-2}). Run \"npx ai-coding-rules generate\" locally and commit the result, or fix the reported findings."
+          exit "${EXIT_CODE:-2}"
+        fi
