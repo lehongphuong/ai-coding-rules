@@ -44,7 +44,7 @@ function commandTemplates(q: FactQuery): RuleTemplate[] {
     perKind.set(kind ?? '', n + 1);
     const name = cmd.meta?.name;
     let label = known ? KIND_LABELS[kind] : (name ?? 'Run');
-    if (known && n > 0 && name) label += ` (${name})`;
+    if (known && n > 0 && name && name !== kind) label += ` (${name})`;
     const base = `common/command-${slug(n === 0 && known ? kind : (name ?? String(cmd.value)))}`;
     let id = base;
     for (let i = 2; usedIds.has(id); i++) id = `${base}-${i}`;
