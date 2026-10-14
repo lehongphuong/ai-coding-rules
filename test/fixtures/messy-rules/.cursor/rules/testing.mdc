@@ -1,0 +1,10 @@
+---
+description: Testing conventions
+globs: src/**/*.test.js
+alwaysApply: false
+---
+
+# Testing
+
+- Use Vitest for unit tests.
+- Co-locate test files next to the code they test.
