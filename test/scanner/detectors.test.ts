@@ -11,6 +11,7 @@ import {
   toolingDetector,
 } from '../../src/scanner/detectors/index.js';
 import { parsePyproject } from '../../src/scanner/detectors/python.js';
+import { workspaceScriptCommand } from '../../src/scanner/detectors/node.js';
 import { find, json, run, values } from './helpers.js';
 
 const commands = (facts: ReturnType<typeof run>): string[] =>
@@ -73,9 +74,16 @@ describe('node detector', () => {
       'apps/web',
     );
     expect(values(facts, 'packageManager')).toEqual([]);
-    expect(commands(facts)).toEqual(['pnpm test', 'pnpm lint', 'pnpm test:e2e']);
+    // run from the repo root, filtered to the workspace package
+    expect(commands(facts)).toEqual([
+      'pnpm --filter x test',
+      'pnpm --filter x lint',
+      'pnpm --filter x test:e2e',
+    ]);
     expect(facts.every((f) => f.scope === 'apps/web')).toBe(true);
-    expect(find(facts, 'command', 'pnpm test')?.evidence[0]?.file).toBe('apps/web/package.json');
+    expect(find(facts, 'command', 'pnpm --filter x test')?.evidence[0]?.file).toBe(
+      'apps/web/package.json',
+    );
   });
 
   it('detects language, strictness, frameworks and tooling', () => {
@@ -408,5 +416,25 @@ describe('agent-files detector', () => {
     ]);
     expect(find(facts, 'agentFile', 'CLAUDE.md')?.meta).toEqual({ target: 'claude' });
     expect(run(agentFilesDetector, repo, 'apps/api')).toEqual([]);
+  });
+});
+
+describe('workspaceScriptCommand', () => {
+  it('builds root-runnable commands per package manager', () => {
+    expect(workspaceScriptCommand('pnpm', 'test', '@a/api', 'apps/api')).toBe(
+      'pnpm --filter @a/api test',
+    );
+    expect(workspaceScriptCommand('yarn', 'test', '@a/api', 'apps/api')).toBe(
+      'yarn workspace @a/api test',
+    );
+    expect(workspaceScriptCommand('npm', 'lint', '@a/api', 'apps/api')).toBe(
+      'npm run lint -w apps/api',
+    );
+    expect(workspaceScriptCommand('bun', 'test', '@a/api', 'apps/api')).toBe(
+      'bun run --filter @a/api test',
+    );
+    expect(workspaceScriptCommand('pnpm', 'test', undefined, 'apps/api')).toBe(
+      'cd apps/api && pnpm test',
+    );
   });
 });

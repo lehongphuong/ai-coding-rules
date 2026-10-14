@@ -102,6 +102,29 @@ export function scriptCommand(pm: NodePm, name: string): string {
   }
 }
 
+/**
+ * Command for a script of a workspace package, run from the repo root so agents
+ * don't accidentally run the root script instead (e.g. `pnpm --filter @acme/api test`).
+ */
+export function workspaceScriptCommand(
+  pm: NodePm,
+  name: string,
+  pkgName: string | undefined,
+  dir: string,
+): string {
+  if (!pkgName) return `cd ${dir} && ${scriptCommand(pm, name)}`;
+  switch (pm) {
+    case 'pnpm':
+      return `pnpm --filter ${pkgName} ${name}`;
+    case 'yarn':
+      return `yarn workspace ${pkgName} ${name}`;
+    case 'bun':
+      return `bun run --filter ${pkgName} ${name}`;
+    case 'npm':
+      return `npm run ${name} -w ${dir}`;
+  }
+}
+
 const FRAMEWORKS: [string, string][] = [
   ['next', 'nextjs'],
   ['react', 'react'],
@@ -344,11 +367,16 @@ function detectCommands(
       }),
     );
   }
+  const pkgName = typeof pkg.name === 'string' ? pkg.name : undefined;
+  const command = (name: string): string =>
+    dir !== '' && !pm.own
+      ? workspaceScriptCommand(pm.pm, name, pkgName, dir)
+      : scriptCommand(pm.pm, name);
   for (const name of Object.keys(stringMap(pkg, 'scripts'))) {
     const kind = inferKind(name);
     if (!kind) continue;
     out.push(
-      fact('command', scriptCommand(pm.pm, name), dir, [ev(pkgPath, `#scripts.${name}`)], 0.95, {
+      fact('command', command(name), dir, [ev(pkgPath, `#scripts.${name}`)], 0.95, {
         kind,
         name,
       }),

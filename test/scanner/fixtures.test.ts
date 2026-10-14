@@ -203,12 +203,15 @@ describe('fixtures', () => {
     // workspace packages inherit the root lockfile: no own packageManager / install
     expect(vals(p, 'packageManager', 'apps/web')).toEqual([]);
     expect(cmds(p, 'apps/web')).toEqual({
-      dev: 'pnpm dev',
-      build: 'pnpm build',
-      lint: 'pnpm lint',
-      test: 'pnpm test',
+      dev: 'pnpm --filter @acme/web dev',
+      build: 'pnpm --filter @acme/web build',
+      lint: 'pnpm --filter @acme/web lint',
+      test: 'pnpm --filter @acme/web test',
     });
-    expect(cmds(p, 'apps/api')).toMatchObject({ test: 'pnpm test', e2e: 'pnpm test:e2e' });
+    expect(cmds(p, 'apps/api')).toMatchObject({
+      test: 'pnpm --filter @acme/api test',
+      e2e: 'pnpm --filter @acme/api test:e2e',
+    });
     expect(cmds(p)).toMatchObject({ install: 'pnpm install', test: 'pnpm test' });
     expect(p.scripts.filter((s) => s.scope === 'apps/api').map((s) => s.name)).toContain(
       'start:dev',
