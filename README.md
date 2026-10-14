@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="ai-coding-rules — one source of truth for every AI coding agent" width="100%">
+<img src="docs/assets/banner.svg" alt="AI Coding Rules — one source of truth for every AI coding agent" width="100%">
 
 <br>
 
@@ -205,10 +205,10 @@ npm install && npm test
 
 ---
 
-**If ai-coding-rules makes your AI agents a little less wrong, give it a ⭐ — it helps more than you think.**
+**If AI Coding Rules makes your AI agents a little less wrong, give it a ⭐ — it helps more than you think.**
 
 [![Star History Chart](https://api.star-history.com/svg?repos=lehongphuong/ai-coding-rules&type=Date)](https://star-history.com/#lehongphuong/ai-coding-rules&Date)
 
-MIT © ai-coding-rules contributors
+MIT © AI Coding Rules contributors
 
 </div>
