@@ -1,4 +1,4 @@
-# ai-coding-rules
+# AI Coding Rules
 
 A local-first CLI that scans your project and generates **evidence-backed** instruction files for AI coding agents — `AGENTS.md`, `CLAUDE.md`, Cursor rules, GitHub Copilot instructions, `GEMINI.md` — and **lints** them for contradictions, duplicates and stale references.
 
