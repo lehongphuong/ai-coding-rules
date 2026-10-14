@@ -66,7 +66,7 @@ describe('program', () => {
     const r = await cli(['--help']);
     expect(r.code).toBe(0);
     expect(r.stdout).toMatch(/^Usage: ai-rules \[options\] \[command\]/);
-    for (const cmd of ['scan', 'generate', 'doctor', 'check', 'explain']) {
+    for (const cmd of ['init', 'scan', 'generate', 'doctor', 'check', 'explain']) {
       expect(r.stdout).toMatch(new RegExp(`^ {2}${cmd}\\b`, 'm'));
     }
     for (const opt of ['--cwd', '--json', '--no-color', '--quiet']) expect(r.stdout).toContain(opt);

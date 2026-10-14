@@ -3,6 +3,7 @@ import { registerCheck } from './commands/check.js';
 import { registerDoctor } from './commands/doctor.js';
 import { registerExplain } from './commands/explain.js';
 import { registerGenerate } from './commands/generate.js';
+import { registerInit } from './commands/init.js';
 import { registerScan } from './commands/scan.js';
 import { CliError, createCtx, packageVersion, type Bind, type CliIO, type GlobalOptions } from './context.js';
 
@@ -39,6 +40,7 @@ export function createProgram(io: CliIO, bind: Bind): Command {
       getErrHasColors: () => false,
     });
 
+  registerInit(program, bind);
   registerScan(program, bind);
   registerGenerate(program, bind);
   registerDoctor(program, bind);
