@@ -1,0 +1,9 @@
+lockfileVersion: '9.0'
+
+importers:
+
+  .:
+    devDependencies:
+      vitest:
+        specifier: ^2.1.2
+        version: 2.1.2

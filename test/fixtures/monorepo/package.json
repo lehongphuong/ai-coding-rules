@@ -1,0 +1,15 @@
+{
+  "name": "acme-monorepo",
+  "description": "Acme web, API and mobile apps",
+  "private": true,
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.3"
+  }
+}

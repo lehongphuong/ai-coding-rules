@@ -1,0 +1,12 @@
+{
+  // NestJS defaults, tightened
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2021",
+    "outDir": "./out",
+    /* strict mode is mandatory */
+    "strict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+  },
+}
